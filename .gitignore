@@ -1,0 +1,6 @@
+.build
+/Open-This*
+local/
+*.sw*
+tidyall.ERR
+.tidyall.d/
