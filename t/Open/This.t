@@ -10,4 +10,20 @@ is_deeply(
     'line 222'
 );
 
+my $foo = Open::This::to_file('Foo::Bar::do_something()');
+
+is_deeply(
+    Open::This::to_file('Foo::Bar::do_something()'),
+    {
+        file_name   => 't/lib/Foo/Bar.pm',
+        line_number => 3,
+        sub_name    => 'do_something',
+    },
+    'line 3'
+);
+
+is(
+    Open::This::to_vim('Foo::Bar::do_something()'),
+    'vim +3 t/lib/Foo/Bar.pm', 'open in vim on line 3'
+);
 done_testing();
