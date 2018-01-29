@@ -41,7 +41,7 @@ sub to_file {
     }
 
     #at lib/Foo/Bar.pm line 222.
-    if ( $text =~ m{\b([^\s]*\.pm) line (\d*)} ) {
+    if ( $text =~ m{\b([^\s]*) line (\d*)} ) {
         return { file_name => $1, line_number => $2 };
     }
     return undef;

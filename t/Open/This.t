@@ -10,8 +10,6 @@ is_deeply(
     'line 222'
 );
 
-my $foo = Open::This::to_file('Foo::Bar::do_something()');
-
 is_deeply(
     Open::This::to_file('Foo::Bar::do_something()'),
     {
@@ -20,6 +18,15 @@ is_deeply(
         sub_name    => 'do_something',
     },
     'line 3'
+);
+
+is_deeply(
+    Open::This::to_file('foo/bar/baz.html.ep line 5.'),
+    {
+        file_name   => 'foo/bar/baz.html.ep',
+        line_number => 5,
+    },
+    'line 3 in Mojo template'
 );
 
 is(
