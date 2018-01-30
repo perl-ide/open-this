@@ -21,7 +21,7 @@ is_deeply(
 );
 
 is_deeply(
-    Open::This::to_file('foo/bar/baz.html.ep line 5.'),
+    Open::This::to_file('foo/bar/baz.html.ep line 5. Blah'),
     {
         file_name   => 'foo/bar/baz.html.ep',
         line_number => 5,
