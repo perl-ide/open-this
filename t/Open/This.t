@@ -70,6 +70,6 @@ is_deeply(
 
 is(
     Open::This::to_vim('Foo::Bar::do_something()'),
-    'vim +3 t/lib/Foo/Bar.pm', 'open in vim on line 3'
+    '+3 t/lib/Foo/Bar.pm', 'open in vim on line 3'
 );
 done_testing();

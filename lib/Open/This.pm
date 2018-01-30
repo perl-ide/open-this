@@ -71,7 +71,6 @@ sub to_vim {
     return $text unless $found;
 
     my @command = (
-        'vim',
         ( $found->{line_number} ? '+' . $found->{line_number} : () ),
         $found->{file_name}
     );
