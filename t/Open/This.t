@@ -29,6 +29,15 @@ is_deeply(
     'line 3 in Mojo template'
 );
 
+is_deeply(
+    Open::This::to_file('t/lib/Foo/Bar.pm:32:'),
+    {
+        file_name   => 't/lib/Foo/Bar.pm',
+        line_number => 32,
+    },
+    'results from git-grep'
+);
+
 is(
     Open::This::to_vim('Foo::Bar::do_something()'),
     'vim +3 t/lib/Foo/Bar.pm', 'open in vim on line 3'

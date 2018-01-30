@@ -44,6 +44,11 @@ sub to_file {
     if ( $text =~ m{\b([^\s]*) line (\d*)} ) {
         return { file_name => $1, line_number => $2 };
     }
+
+    # git-grep
+    if ( $text =~ m{\b([^\s]*):(\d*):} ) {
+        return { file_name => $1, line_number => $2 };
+    }
     return undef;
 }
 
