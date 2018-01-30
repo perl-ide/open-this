@@ -56,6 +56,18 @@ is_deeply(
     'file name passed in'
 );
 
+is_deeply(
+    Open::This::to_file(
+        '/Users/olaf/.plenv/versions/5.26.1/lib/perl5/site_perl/5.26.1/String/RewritePrefix.pm line 41.'
+    ),
+    {
+        file_name =>
+            '/Users/olaf/.plenv/versions/5.26.1/lib/perl5/site_perl/5.26.1/String/RewritePrefix.pm',
+        line_number => 41,
+    },
+    'line 41 in absolute path'
+);
+
 is(
     Open::This::to_vim('Foo::Bar::do_something()'),
     'vim +3 t/lib/Foo/Bar.pm', 'open in vim on line 3'
