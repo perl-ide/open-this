@@ -32,11 +32,13 @@ sub to_file {
             $line_number = shift @results;
         }
 
-        return {
+        return $file_name
+            ? {
             file_name   => $file_name,
             line_number => $line_number,
             $sub_name ? ( sub_name => $sub_name ) : (),
-        };
+            }
+            : undef;
     }
 
     #at lib/Foo/Bar.pm line 222.

@@ -38,6 +38,18 @@ is_deeply(
     'results from git-grep'
 );
 
+is_deeply(
+    Open::This::to_file('t/Does/Not/Exist'),
+    undef,
+    'undef on not found file'
+);
+
+is_deeply(
+    Open::This::to_file('X::Y'),
+    undef,
+    'undef on not found module'
+);
+
 is(
     Open::This::to_vim('Foo::Bar::do_something()'),
     'vim +3 t/lib/Foo/Bar.pm', 'open in vim on line 3'
