@@ -7,6 +7,8 @@ use Path::Tiny qw( path );
 sub to_file {
     my $text = shift;
 
+    return undef if !$text;
+
     if ( -e path($text) ) {
         return { file_name => $text };
     }
