@@ -63,9 +63,12 @@ sub to_file {
 
 sub to_vim {
     my $text  = shift;
+    return undef unless $text;
+
     my $found = to_file($text);
 
-    return "Could not parse $text" unless $found;
+    # Maybe this file is just being created
+    return $text unless $found;
 
     my @command = (
         'vim',
