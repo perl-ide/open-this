@@ -2,7 +2,6 @@ use strict;
 use warnings;
 package Open::This;
 
-use feature qw( say );
 use Path::Tiny qw( path );
 
 sub to_file {
