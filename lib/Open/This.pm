@@ -49,6 +49,8 @@ sub to_file {
     if ( $text =~ m{\b([^\s]*):(\d*)\b} ) {
         return { file_name => $1, line_number => $2 };
     }
+
+    ## no critic (Subroutines::ProhibitExplicitReturnUndef)
     return undef;
 }
 
