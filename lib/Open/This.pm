@@ -66,4 +66,5 @@ sub to_vim {
     return join q{ }, @command;
 }
 
+# ABSTRACT: Try to Do the Right Thing when opening files
 1;
