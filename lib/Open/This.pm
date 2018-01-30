@@ -62,7 +62,7 @@ sub to_file {
 }
 
 sub to_vim {
-    my $text  = shift;
+    my $text = shift;
     return undef unless $text;
 
     my $found = to_file($text);
