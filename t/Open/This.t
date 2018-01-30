@@ -50,6 +50,12 @@ is_deeply(
     'undef on not found module'
 );
 
+is_deeply(
+    Open::This::to_file('t/lib/Foo/Bar.pm'),
+    { file_name => 't/lib/Foo/Bar.pm' },
+    'file name passed in'
+);
+
 is(
     Open::This::to_vim('Foo::Bar::do_something()'),
     'vim +3 t/lib/Foo/Bar.pm', 'open in vim on line 3'

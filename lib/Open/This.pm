@@ -7,6 +7,9 @@ use Path::Tiny qw( path );
 sub to_file {
     my $text = shift;
 
+    if ( -e path($text) ) {
+        return { file_name => $text };
+    }
     if ( $text =~ m{::} ) {
         my @parts = split m{::}, $text;
         my $sub_name;
@@ -56,8 +59,11 @@ sub to_file {
 }
 
 sub to_vim {
-    my $text    = shift;
-    my $found   = to_file($text);
+    my $text  = shift;
+    my $found = to_file($text);
+
+    return "Could not parse $text" unless $found;
+
     my @command = (
         'vim',
         ( $found->{line_number} ? '+' . $found->{line_number} : () ),
