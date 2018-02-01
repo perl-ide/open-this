@@ -4,6 +4,8 @@ package Open::This;
 
 use Path::Tiny qw( path );
 
+## no critic (Subroutines::ProhibitExplicitReturnUndef)
+
 sub to_file {
     my $text = shift;
 
@@ -57,7 +59,6 @@ sub to_file {
         return { file_name => $1, line_number => $2 };
     }
 
-    ## no critic (Subroutines::ProhibitExplicitReturnUndef)
     return undef;
 }
 
