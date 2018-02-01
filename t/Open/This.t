@@ -81,12 +81,12 @@ is_deeply(
 );
 
 is_deeply(
-    Open::This::to_vim('/Users/Foo Bar/something/or/other.txt'),
+    Open::This::to_editor_args('/Users/Foo Bar/something/or/other.txt'),
     '/Users/Foo Bar/something/or/other.txt',
     'spaces in file name'
 );
 is_deeply(
-    [ Open::This::to_vim('Foo::Bar::do_something()') ],
+    [ Open::This::to_editor_args('Foo::Bar::do_something()') ],
     [ '+3', 't/lib/Foo/Bar.pm', ], 'open in vim on line 3'
 );
 

@@ -62,7 +62,7 @@ sub to_file {
     return undef;
 }
 
-sub to_vim {
+sub to_editor_args {
     my $text = shift;
     return undef unless $text;
 
