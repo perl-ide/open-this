@@ -1,5 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env perl
 
-vi=$(type -p vim)
-string=$(perl -MOpen::This -E "print Open::This::to_vim('$1')")
-$vi $string
+use strict;
+use warnings;
+
+use Open::This;
+
+# This should work for both vim, emacs and nano
+exec {$ENV{EDITOR}} Open::This::to_vim(@ARGV);
