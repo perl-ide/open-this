@@ -68,8 +68,9 @@ is_deeply(
     'line 41 in absolute path'
 );
 
-is(
-    Open::This::to_vim('Foo::Bar::do_something()'),
-    '+3 t/lib/Foo/Bar.pm', 'open in vim on line 3'
+is_deeply(
+    [ Open::This::to_vim('Foo::Bar::do_something()') ],
+    [ '+3', 't/lib/Foo/Bar.pm', ], 'open in vim on line 3'
 );
+
 done_testing();

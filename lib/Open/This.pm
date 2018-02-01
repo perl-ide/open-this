@@ -70,11 +70,10 @@ sub to_vim {
     # Maybe this file is just being created
     return $text unless $found;
 
-    my @command = (
+    return (
         ( $found->{line_number} ? '+' . $found->{line_number} : () ),
         $found->{file_name}
     );
-    return join q{ }, @command;
 }
 
 # ABSTRACT: Try to Do the Right Thing when opening files
