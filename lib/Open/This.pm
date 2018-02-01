@@ -79,3 +79,24 @@ sub to_editor_args {
 
 # ABSTRACT: Try to Do the Right Thing when opening files
 1;
+
+=pod
+
+=head1 DESCRIPTION
+
+This module powers the C<ot> command line script, which tries to do the right
+thing when opening a file.  Imagine your C<$EDITOR> env var is set to C<vim>.
+
+    ot Foo::Bar # vim lib/Foo/Bar.pm
+    ot Foo::Bar # vim t/lib/Foo/Bar.pm
+
+Imagine this module has a sub called do_something at line 55.
+    ot "Foo::Bar::do_something()" # vim +55 lib/Foo/Bar.pm
+
+Or, when copy/pasting from a stack trace:
+    ot "Foo::Bar line 36" # vim +36 lib/Foo/Bar.pm
+
+Copy/pasting a C<git-grep> result:
+    ot "Foo/Bar.pm:99" # vim +99 Foo/Bar.pm
+
+=cut
