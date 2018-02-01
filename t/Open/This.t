@@ -71,7 +71,13 @@ is_deeply(
 is_deeply(
     Open::This::to_file('/Users/Foo Bar/something/or/other.txt'),
     undef,
-    'spaces in file name'
+    'spaces in file name but not found'
+);
+
+is_deeply(
+    Open::This::to_file('t/test-data/file with spaces'),
+    { file_name => 't/test-data/file with spaces' },
+    'spaces in file name and exists'
 );
 
 is_deeply(
