@@ -1,0 +1,5 @@
+#!/bin/bash
+
+vi=$(type -p vim)
+string=$(perl -MOpen::This -E "print Open::This::to_vim('$1')")
+$vi $string
