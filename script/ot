@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Open::This;
+use Open::This ();
 
-# This should work for both vim, emacs and nano
-exec {$ENV{EDITOR}} Open::This::to_editor_args(@ARGV);
+my @editor_args = Open::This::to_editor_args(@ARGV);
+exec $ENV{EDITOR}, @editor_args;
