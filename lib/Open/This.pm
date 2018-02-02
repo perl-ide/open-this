@@ -2,6 +2,9 @@ use strict;
 use warnings;
 package Open::This;
 
+our @ISA       = qw(Exporter);
+our @EXPORT_OK = qw(parse_text to_editor_args);
+
 use Module::Runtime
     qw( is_module_name module_notional_filename require_module );
 use Path::Tiny qw( path );
