@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Open::This qw( parse_text to_editor_args );
+use Path::Tiny qw( path );
 use Test::More;
 use Test::Differences;
 
@@ -84,16 +85,14 @@ eq_or_diff(
     'file name passed in'
 );
 
+my $abs_path = path('t/lib/Foo/Bar.pm')->absolute;
 eq_or_diff(
-    parse_text(
-        '/Users/olaf/.plenv/versions/5.26.1/lib/perl5/site_perl/5.26.1/String/RewritePrefix.pm line 41.'
-    ),
+    parse_text("$abs_path line 41."),
     {
-        file_name =>
-            '/Users/olaf/.plenv/versions/5.26.1/lib/perl5/site_perl/5.26.1/String/RewritePrefix.pm',
+        file_name   => $abs_path->stringify,
         line_number => 41,
     },
-    'line 41 in absolute path'
+    'line 41 in absolute path: ' . $abs_path
 );
 
 eq_or_diff(
