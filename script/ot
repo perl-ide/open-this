@@ -6,4 +6,4 @@ use warnings;
 use Open::This;
 
 # This should work for both vim, emacs and nano
-exec {$ENV{EDITOR}} Open::This::to_vim(@ARGV);
+exec {$ENV{EDITOR}} Open::This::to_editor_args(@ARGV);

@@ -3,14 +3,42 @@ use warnings;
 
 use Open::This;
 use Test::More;
+use Test::Differences;
 
-is_deeply(
-    Open::This::to_file('at lib/Foo/Bar.pm line 222.'),
-    { file_name => 'lib/Foo/Bar.pm', line_number => 222, },
+{
+    my $text        = 'lib/Foo/Bar.pm line 222.';
+    my $line_number = Open::This::_maybe_extract_line_number( \$text );
+    is( $line_number, 222, 'line_number' );
+    is( $text, 'lib/Foo/Bar.pm', 'line number stripped' );
+}
+
+{
+    my $text        = 'lib/Open/This.pm:17';
+    my $line_number = Open::This::_maybe_extract_line_number( \$text );
+    is( $line_number, 17, 'git-grep line_number' );
+    is( $text, 'lib/Open/This.pm', 'git-grep line number stripped' );
+}
+
+{
+    my $text = 'Open::This::do_something()';
+    my $name = Open::This::_maybe_extract_subroutine_name( \$text );
+    is( $name, 'do_something', 'subroutine name' );
+    is( $text, 'Open::This',   'sub name stripped' );
+}
+
+{
+    my $text = 'Foo::Bar';
+    my $name = Open::This::_maybe_find_local_file($text);
+    is( $name, 't/lib/Foo/Bar.pm', 'found local file' );
+}
+
+eq_or_diff(
+    Open::This::to_file('t/lib/Foo/Bar.pm line 222.'),
+    { file_name => 't/lib/Foo/Bar.pm', line_number => 222, },
     'line 222'
 );
 
-is_deeply(
+eq_or_diff(
     Open::This::to_file('Foo::Bar::do_something()'),
     {
         file_name   => 't/lib/Foo/Bar.pm',
@@ -20,17 +48,17 @@ is_deeply(
     'line 3'
 );
 
-is_deeply(
-    Open::This::to_file('foo/bar/baz.html.ep line 5. Blah'),
+eq_or_diff(
+    Open::This::to_file('t/test-data/foo/bar/baz.html.ep line 5. Blah'),
     {
-        file_name   => 'foo/bar/baz.html.ep',
+        file_name   => 't/test-data/foo/bar/baz.html.ep',
         line_number => 5,
     },
     'line 3 in Mojo template'
 );
 
-is_deeply(
-    Open::This::to_file('t/lib/Foo/Bar.pm:32:'),
+eq_or_diff(
+    Open::This::to_file('t/lib/Foo/Bar.pm:32'),
     {
         file_name   => 't/lib/Foo/Bar.pm',
         line_number => 32,
@@ -38,25 +66,25 @@ is_deeply(
     'results from git-grep'
 );
 
-is_deeply(
+eq_or_diff(
     Open::This::to_file('t/Does/Not/Exist'),
     undef,
     'undef on not found file'
 );
 
-is_deeply(
+eq_or_diff(
     Open::This::to_file('X::Y'),
     undef,
     'undef on not found module'
 );
 
-is_deeply(
+eq_or_diff(
     Open::This::to_file('t/lib/Foo/Bar.pm'),
     { file_name => 't/lib/Foo/Bar.pm' },
     'file name passed in'
 );
 
-is_deeply(
+eq_or_diff(
     Open::This::to_file(
         '/Users/olaf/.plenv/versions/5.26.1/lib/perl5/site_perl/5.26.1/String/RewritePrefix.pm line 41.'
     ),
@@ -68,26 +96,29 @@ is_deeply(
     'line 41 in absolute path'
 );
 
-is_deeply(
+eq_or_diff(
     Open::This::to_file('/Users/Foo Bar/something/or/other.txt'),
     undef,
     'spaces in file name but not found'
 );
 
-is_deeply(
+eq_or_diff(
     Open::This::to_file('t/test-data/file with spaces'),
     { file_name => 't/test-data/file with spaces' },
     'spaces in file name and exists'
 );
 
-is_deeply(
+eq_or_diff(
     Open::This::to_editor_args('/Users/Foo Bar/something/or/other.txt'),
     '/Users/Foo Bar/something/or/other.txt',
     'spaces in file name'
 );
-is_deeply(
+eq_or_diff(
     [ Open::This::to_editor_args('Foo::Bar::do_something()') ],
     [ '+3', 't/lib/Foo/Bar.pm', ], 'open in vim on line 3'
 );
+
+my $more = Open::This::to_file('Test::More');
+ok( $more->{file_name}, 'found Test::More on disk' );
 
 done_testing();
