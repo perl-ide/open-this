@@ -33,13 +33,13 @@ use Test::Differences;
 }
 
 eq_or_diff(
-    Open::This::to_file('t/lib/Foo/Bar.pm line 222.'),
+    Open::This::parse_text('t/lib/Foo/Bar.pm line 222.'),
     { file_name => 't/lib/Foo/Bar.pm', line_number => 222, },
     'line 222'
 );
 
 eq_or_diff(
-    Open::This::to_file('Foo::Bar::do_something()'),
+    Open::This::parse_text('Foo::Bar::do_something()'),
     {
         file_name   => 't/lib/Foo/Bar.pm',
         line_number => 3,
@@ -49,7 +49,7 @@ eq_or_diff(
 );
 
 eq_or_diff(
-    Open::This::to_file('t/test-data/foo/bar/baz.html.ep line 5. Blah'),
+    Open::This::parse_text('t/test-data/foo/bar/baz.html.ep line 5. Blah'),
     {
         file_name   => 't/test-data/foo/bar/baz.html.ep',
         line_number => 5,
@@ -58,7 +58,7 @@ eq_or_diff(
 );
 
 eq_or_diff(
-    Open::This::to_file('t/lib/Foo/Bar.pm:32'),
+    Open::This::parse_text('t/lib/Foo/Bar.pm:32'),
     {
         file_name   => 't/lib/Foo/Bar.pm',
         line_number => 32,
@@ -67,25 +67,25 @@ eq_or_diff(
 );
 
 eq_or_diff(
-    Open::This::to_file('t/Does/Not/Exist'),
+    Open::This::parse_text('t/Does/Not/Exist'),
     undef,
     'undef on not found file'
 );
 
 eq_or_diff(
-    Open::This::to_file('X::Y'),
+    Open::This::parse_text('X::Y'),
     undef,
     'undef on not found module'
 );
 
 eq_or_diff(
-    Open::This::to_file('t/lib/Foo/Bar.pm'),
+    Open::This::parse_text('t/lib/Foo/Bar.pm'),
     { file_name => 't/lib/Foo/Bar.pm' },
     'file name passed in'
 );
 
 eq_or_diff(
-    Open::This::to_file(
+    Open::This::parse_text(
         '/Users/olaf/.plenv/versions/5.26.1/lib/perl5/site_perl/5.26.1/String/RewritePrefix.pm line 41.'
     ),
     {
@@ -97,13 +97,13 @@ eq_or_diff(
 );
 
 eq_or_diff(
-    Open::This::to_file('/Users/Foo Bar/something/or/other.txt'),
+    Open::This::parse_text('/Users/Foo Bar/something/or/other.txt'),
     undef,
     'spaces in file name but not found'
 );
 
 eq_or_diff(
-    Open::This::to_file('t/test-data/file with spaces'),
+    Open::This::parse_text('t/test-data/file with spaces'),
     { file_name => 't/test-data/file with spaces' },
     'spaces in file name and exists'
 );
@@ -118,7 +118,7 @@ eq_or_diff(
     [ '+3', 't/lib/Foo/Bar.pm', ], 'open in vim on line 3'
 );
 
-my $more = Open::This::to_file('Test::More');
+my $more = Open::This::parse_text('Test::More');
 ok( $more->{file_name}, 'found Test::More on disk' );
 
 done_testing();

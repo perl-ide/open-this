@@ -9,7 +9,7 @@ use Try::Tiny qw( try );
 
 ## no critic (Subroutines::ProhibitExplicitReturnUndef)
 
-sub to_file {
+sub parse_text {
     my $text = shift;
 
     return undef if !$text;
@@ -66,7 +66,7 @@ sub to_editor_args {
     my $text = shift;
     return undef unless $text;
 
-    my $found = to_file($text);
+    my $found = parse_text($text);
 
     # Maybe this file is just being created
     return $text unless $found;
