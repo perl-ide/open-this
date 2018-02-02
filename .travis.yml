@@ -17,8 +17,12 @@ notifications:
     on_success: always
     on_failure: always
 before_install:
-  - eval $(curl https://travis-perl.github.io/init) --auto
+  - eval $(curl https://travis-perl.github.io/init) --perl
+install:
+  - cpanm App::cpm
+  - cpm install -g --with-develop --with-suggests
 cache:
   directories:
-    - local
     - ~/perl5
+script:
+  - "prove -lr -j$(test-jobs) t"
