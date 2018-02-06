@@ -127,7 +127,7 @@ sub _maybe_find_local_file {
 =head1 DESCRIPTION
 
 This module powers the C<ot> command line script, which tries to do the right
-thing when opening a file.  Imagine your C<$EDITOR> env var is set to C<vim>.
+thing when opening a file.  Imagine your C<$EDITOR> %ENV var is set to C<vim>.
 
     ot Foo::Bar # vim lib/Foo/Bar.pm
     ot Foo::Bar # vim t/lib/Foo/Bar.pm
