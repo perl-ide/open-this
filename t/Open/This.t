@@ -108,7 +108,7 @@ eq_or_diff(
 );
 
 eq_or_diff(
-    [to_editor_args('t/test-data/file with spaces')],
+    [ to_editor_args('t/test-data/file with spaces') ],
     ['t/test-data/file with spaces'],
     'spaces in file name'
 );
