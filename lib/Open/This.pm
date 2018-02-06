@@ -67,12 +67,12 @@ sub _module_to_filename {
 
 sub to_editor_args {
     my $text = shift;
-    return undef unless $text;
+    return unless $text;
 
     my $found = parse_text($text);
 
     # Maybe this file is just being created
-    return $text unless $found;
+    return unless $found;
 
     return (
         ( $found->{line_number} ? '+' . $found->{line_number} : () ),
