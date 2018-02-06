@@ -108,8 +108,8 @@ eq_or_diff(
 );
 
 eq_or_diff(
-    to_editor_args('/Users/Foo Bar/something/or/other.txt'),
-    '/Users/Foo Bar/something/or/other.txt',
+    [to_editor_args('t/test-data/file with spaces')],
+    ['t/test-data/file with spaces'],
     'spaces in file name'
 );
 eq_or_diff(
