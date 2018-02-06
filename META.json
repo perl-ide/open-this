@@ -44,7 +44,9 @@
       },
       "runtime" : {
          "requires" : {
+            "Module::Runtime" : "0",
             "Path::Tiny" : "0",
+            "Try::Tiny" : "0",
             "perl" : "5.006",
             "strict" : "0",
             "warnings" : "0"
@@ -57,6 +59,7 @@
          "requires" : {
             "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
+            "Test::Differences" : "0",
             "Test::More" : "0",
             "perl" : "5.006"
          }
@@ -519,7 +522,7 @@
                "Dist::Zilla::Plugin::RewriteVersion::Transitional" : {}
             },
             "name" : "@Author::OALDERS/@Git::VersionManager/RewriteVersion::Transitional",
-            "version" : "0.008"
+            "version" : "0.009"
          },
          {
             "class" : "Dist::Zilla::Plugin::MetaProvides::Update",
@@ -607,7 +610,7 @@
                "Dist::Zilla::Plugin::BumpVersionAfterRelease::Transitional" : {}
             },
             "name" : "@Author::OALDERS/@Git::VersionManager/BumpVersionAfterRelease::Transitional",
-            "version" : "0.008"
+            "version" : "0.009"
          },
          {
             "class" : "Dist::Zilla::Plugin::NextRelease",

@@ -13,17 +13,23 @@ my %WriteMakefileArgs = (
     "ExtUtils::MakeMaker" => 0
   },
   "DISTNAME" => "Open-This",
+  "EXE_FILES" => [
+    "script/ot"
+  ],
   "LICENSE" => "perl",
   "MIN_PERL_VERSION" => "5.006",
   "NAME" => "Open::This",
   "PREREQ_PM" => {
+    "Module::Runtime" => 0,
     "Path::Tiny" => 0,
+    "Try::Tiny" => 0,
     "strict" => 0,
     "warnings" => 0
   },
   "TEST_REQUIRES" => {
     "ExtUtils::MakeMaker" => 0,
     "File::Spec" => 0,
+    "Test::Differences" => 0,
     "Test::More" => 0
   },
   "VERSION" => "0.000001",
@@ -36,8 +42,11 @@ my %WriteMakefileArgs = (
 my %FallbackPrereqs = (
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,
+  "Module::Runtime" => 0,
   "Path::Tiny" => 0,
+  "Test::Differences" => 0,
   "Test::More" => 0,
+  "Try::Tiny" => 0,
   "strict" => 0,
   "warnings" => 0
 );
