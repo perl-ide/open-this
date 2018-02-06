@@ -42,6 +42,9 @@ disks.  All security caveats apply when requiring 3rd party modules.
     # open Foo::Bar which is in your lib, t/lib or @INC
     ot Foo::Bar
 
+    # open Foo::Bar at the do_something() subroutine
+    ot "Foo::Bar::do_something()"
+
     # open output from git-grep
     ot lib/Open/This.pm:17
 
