@@ -141,4 +141,33 @@ Or, when copy/pasting from a stack trace:
 Copy/pasting a C<git-grep> result:
     ot "Foo/Bar.pm:99" # vim +99 Foo/Bar.pm
 
+=head1 FUNCTIONS
+
+=head2 parse_text
+
+Given a scalar value, this function will try to extract useful information from
+it.  Returns a hashref on success.  Returns undef on failure.  C<file_name> is
+the only hash key which is guaranteed to be in the hash.
+
+    use Open::This qw( parse_text );
+    my $parsed = parse_text('t/lib/Foo/Bar.pm:32');
+
+    # $parsed = { file_name => 't/lib/Foo/Bar.pm', line_number => 32, }
+
+    my $with_sub_name = parse_text( 'Foo::Bar::do_something()' );
+
+    # $with_sub_name = {
+    #     file_name   => 't/lib/Foo/Bar.pm',
+    #     line_number => 3,
+    #     sub_name    => 'do_something',
+    # };
+
+=head2 to_editor_args
+
+Given a scalar value, this calls C<parse_text()> and returns an array of values
+which can be passed at the command line to an editor.
+
+    my @args = to_editor_args('Foo::Bar::do_something()');
+    # @args = ( '+3', 't/lib/Foo/Bar.pm' );
+
 =cut
