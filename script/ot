@@ -6,4 +6,12 @@ use warnings;
 use Open::This ();
 
 my @editor_args = Open::This::to_editor_args(@ARGV);
+
+if ( !@editor_args ) {
+    print "Could not locate file\n";
+    exit;
+}
+
 exec $ENV{EDITOR}, @editor_args;
+
+# ABSTRACT: parse text and (hopefully) open an editor with the correct arguments
