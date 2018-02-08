@@ -42,7 +42,7 @@ sub parse_text {
         }
     }
 
-    if ( $file_name && $sub_name ) {
+    if ( $file_name && $sub_name && $^O ne 'MSWin32' ) {
         my $grep = `grep --line-number "sub $sub_name" $file_name`;
         my @results = split m{:}, $grep;
         $line_number = shift @results;

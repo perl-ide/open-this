@@ -48,9 +48,9 @@ eq_or_diff(
 eq_or_diff(
     parse_text('Foo::Bar::do_something()'),
     {
-        file_name   => 't/lib/Foo/Bar.pm',
-        line_number => 3,
-        sub_name    => 'do_something',
+        file_name => 't/lib/Foo/Bar.pm',
+        $^O eq 'MSWin32' ? () : ( line_number => 3 ),
+        sub_name => 'do_something',
     },
     'line 3'
 );
@@ -120,7 +120,8 @@ eq_or_diff(
 );
 eq_or_diff(
     [ to_editor_args('Foo::Bar::do_something()') ],
-    [ '+3', 't/lib/Foo/Bar.pm', ], 'open in vim on line 3'
+    [ $^O eq 'MSWin32' ? () : ('+3'), 't/lib/Foo/Bar.pm', ],
+    'open in vim on line 3'
 );
 
 my $more = parse_text('Test::More');
