@@ -6,7 +6,7 @@ Open::This - Try to Do the Right Thing when opening files
 
 # VERSION
 
-version 0.000002
+version 0.000003
 
 # DESCRIPTION
 
@@ -21,21 +21,23 @@ Imagine this module has a sub called do\_something at line 55.
 
     ot "Foo::Bar::do_something()" # vim +55 lib/Foo/Bar.pm
 
-Or, when copy/pasting from a stack trace:
+Or, when copy/pasting from a stack trace.  Note that you do not need quotes in
+this case:
 
-    ot "Foo::Bar line 36" # vim +36 lib/Foo/Bar.pm
+    ot Foo::Bar line 36 # vim +36 lib/Foo/Bar.pm
 
 Copy/pasting a `git-grep` result:
 
-    ot "Foo/Bar.pm:99" # vim +99 Foo/Bar.pm
+    ot lib/Foo/Bar.pm:99 # vim +99 Foo/Bar.pm
 
 # FUNCTIONS
 
 ## parse\_text
 
-Given a scalar value, this function will try to extract useful information from
-it.  Returns a hashref on success.  Returns undef on failure.  `file_name` is
-the only hash key which is guaranteed to be in the hash.
+Given a scalar value or an array of scalars, this function will try to extract
+useful information from it.  Returns a hashref on success.  Returns undef on
+failure.  `file_name` is the only hash key which is guaranteed to be in the
+hash.
 
     use Open::This qw( parse_text );
     my $parsed = parse_text('t/lib/Foo/Bar.pm:32');

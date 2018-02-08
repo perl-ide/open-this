@@ -1,6 +1,6 @@
 Revision history for Open-This
 
-{{$NEXT}}
+0.000003  2018-02-08 17:11:27Z
     - parse_text() now accepts an array, which means less situations where args
       to ot need to be quoted at the command line
 
