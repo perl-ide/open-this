@@ -1,6 +1,6 @@
 Revision history for Open-This
 
-{{$NEXT}}
+0.000004  2018-02-08 19:06:09Z
     - Try to fix some tests when running under MSWin32
 
 0.000003  2018-02-08 17:11:27Z
