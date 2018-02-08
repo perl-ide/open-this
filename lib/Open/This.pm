@@ -15,7 +15,7 @@ use Try::Tiny qw( try );
 ## no critic (Subroutines::ProhibitExplicitReturnUndef)
 
 sub parse_text {
-    my $text = shift;
+    my $text = join q{ }, @_;
 
     return undef if !$text;
     my $file_name;
@@ -139,21 +139,23 @@ Imagine this module has a sub called do_something at line 55.
 
     ot "Foo::Bar::do_something()" # vim +55 lib/Foo/Bar.pm
 
-Or, when copy/pasting from a stack trace:
+Or, when copy/pasting from a stack trace.  Note that you do not need quotes in
+this case:
 
-    ot "Foo::Bar line 36" # vim +36 lib/Foo/Bar.pm
+    ot Foo::Bar line 36 # vim +36 lib/Foo/Bar.pm
 
 Copy/pasting a C<git-grep> result:
 
-    ot "Foo/Bar.pm:99" # vim +99 Foo/Bar.pm
+    ot lib/Foo/Bar.pm:99 # vim +99 Foo/Bar.pm
 
 =head1 FUNCTIONS
 
 =head2 parse_text
 
-Given a scalar value, this function will try to extract useful information from
-it.  Returns a hashref on success.  Returns undef on failure.  C<file_name> is
-the only hash key which is guaranteed to be in the hash.
+Given a scalar value or an array of scalars, this function will try to extract
+useful information from it.  Returns a hashref on success.  Returns undef on
+failure.  C<file_name> is the only hash key which is guaranteed to be in the
+hash.
 
     use Open::This qw( parse_text );
     my $parsed = parse_text('t/lib/Foo/Bar.pm:32');

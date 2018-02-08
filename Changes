@@ -1,6 +1,8 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - parse_text() now accepts an array, which means less situations where args
+      to ot need to be quoted at the command line
 
 0.000002  2018-02-07 17:05:20Z
     - Pod formatting

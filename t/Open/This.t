@@ -40,6 +40,12 @@ eq_or_diff(
 );
 
 eq_or_diff(
+    parse_text( 't/lib/Foo/Bar.pm', 'line', '222.' ),
+    { file_name => 't/lib/Foo/Bar.pm', line_number => 222, },
+    'parse_text with list'
+);
+
+eq_or_diff(
     parse_text('Foo::Bar::do_something()'),
     {
         file_name   => 't/lib/Foo/Bar.pm',
