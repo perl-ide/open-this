@@ -124,6 +124,12 @@ eq_or_diff(
     'open in vim on line 3'
 );
 
+eq_or_diff(
+    [ to_editor_args('t/lib/Foo/Bar.pm line 2') ],
+    [ '+2', 't/lib/Foo/Bar.pm', ],
+    'open in vim on line 2'
+);
+
 my $more = parse_text('Test::More');
 ok( $more->{file_name}, 'found Test::More on disk' );
 

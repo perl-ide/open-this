@@ -68,7 +68,7 @@ sub _module_to_filename {
 }
 
 sub to_editor_args {
-    my $text = shift;
+    my $text = join q{ }, @_;
     return unless $text;
 
     my $found = parse_text($text);
