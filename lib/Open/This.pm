@@ -117,7 +117,7 @@ sub _maybe_find_local_file {
         ? split m{,}, $ENV{OPEN_THIS_LIBS}
         : ( 'lib', 't/lib' );
 
-    for my $dir ( @dirs ) {
+    for my $dir (@dirs) {
         my $path = path( $dir, $possible_name );
         if ( $path->is_file ) {
             return "$path";
