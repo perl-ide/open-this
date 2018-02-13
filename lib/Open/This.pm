@@ -112,7 +112,12 @@ sub _maybe_extract_subroutine_name {
 sub _maybe_find_local_file {
     my $text          = shift;
     my $possible_name = module_notional_filename($text);
-    for my $dir ( 'lib', 't/lib' ) {
+    my @dirs
+        = exists $ENV{OPEN_THIS_LIBS}
+        ? split m{,}, $ENV{OPEN_THIS_LIBS}
+        : ( 'lib', 't/lib' );
+
+    for my $dir ( @dirs ) {
         my $path = path( $dir, $possible_name );
         if ( $path->is_file ) {
             return "$path";
@@ -178,5 +183,9 @@ which can be passed at the command line to an editor.
 
     my @args = to_editor_args('Foo::Bar::do_something()');
     # @args = ( '+3', 't/lib/Foo/Bar.pm' );
+
+=head1 ENVIRONMENT VARIABLES
+
+By default, C<ot> will search your C<lib> and C<t/lib> directories for local files.  You can override this via the C<$ENV{OPEN_THIS_LIBS}> variable.  It accepts a comma-separated list of libs.
 
 =cut

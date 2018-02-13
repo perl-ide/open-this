@@ -54,4 +54,18 @@ disks.  All security caveats apply when requiring 3rd party modules.
     # Open a core module at a function
     ot "Test::More::diag()"
 
+=head1 ENVIRONMENT VARIABLES
+
+By default, C<ot> will search your C<lib> and C<t/lib> directories for local files.  You can override this via the C<$ENV{OPEN_THIS_LIBS}> variable.  It accepts a comma-separated list of libs.
+
+    export OPEN_THIS_LIBS=lib,t/lib,t/other-lib
+
+Or
+
+    OPEN_THIS_LIBS=lib,t/lib,t/other-lib ot Foo::Bar
+
+Probably you want to export this variable in your C<~/.bashrc> file (or some
+other appropriate place in your dot files.
+
+
 =cut
