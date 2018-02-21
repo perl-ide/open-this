@@ -103,7 +103,7 @@ sub _maybe_extract_line_number {
 sub _maybe_extract_subroutine_name {
     my $text = shift;    # scalar ref
 
-    if ( $$text =~ s{::(\w+)\(\)}{} ) {
+    if ( $$text =~ s{::(\w+)\(.*\)}{} ) {
         return $1;
     }
     return undef;

@@ -45,6 +45,9 @@ disks.  All security caveats apply when requiring 3rd party modules.
     # open Foo::Bar at the do_something() subroutine
     ot "Foo::Bar::do_something()"
 
+    # open Foo::Bar at the do_something() subroutine
+    ot "Foo::Bar::do_something('HASH(0x25521248)')"
+
     # open output from git-grep
     ot lib/Open/This.pm:17
 
