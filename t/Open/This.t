@@ -35,6 +35,13 @@ use Test::Differences;
 }
 
 {
+    my $text = q{Foo::Bar::_render('This::Module=HASH(0x257631c0)')};
+    my $name = Open::This::_maybe_extract_subroutine_name( \$text );
+    is( $name, '_render', 'subroutine name with args' );
+    is( $text, 'Foo::Bar',   'stringified object' );
+}
+
+{
     my $text = 'Foo::Bar';
     my $name = Open::This::_maybe_find_local_file($text);
     is( $name, 't/lib/Foo/Bar.pm', 'found local file' );
