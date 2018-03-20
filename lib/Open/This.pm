@@ -97,6 +97,12 @@ sub _maybe_extract_line_number {
     if ( $$text =~ s{(\w):(\d*)\b}{$1} ) {
         return $2;
     }
+
+    # git-grep contextual match
+    # lib/Open/This.pm-17-
+    if ( $$text =~ s{(\w)-{1}(\d*)-}{$1} ) {
+        return $2;
+    }
     return undef;
 }
 
