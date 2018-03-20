@@ -44,8 +44,8 @@ use Test::Differences;
 {
     my $text = q{Foo::Bar::_render('This::Module=HASH(0x257631c0)')};
     my $name = Open::This::_maybe_extract_subroutine_name( \$text );
-    is( $name, '_render', 'subroutine name with args' );
-    is( $text, 'Foo::Bar',   'stringified object' );
+    is( $name, '_render',  'subroutine name with args' );
+    is( $text, 'Foo::Bar', 'stringified object' );
 }
 
 {
