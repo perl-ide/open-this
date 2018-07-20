@@ -94,7 +94,7 @@ sub _maybe_extract_line_number {
 
     # git-grep (don't match on ::)
     # lib/Open/This.pm:17
-    if ( $$text =~ s{(\w):(\d*)\b}{$1} ) {
+    if ( $$text =~ s{(\w):(\d+)\b}{$1} ) {
         return $2;
     }
 
