@@ -38,6 +38,13 @@ use Test::Differences;
 }
 
 {
+    my $text        = 'lib/Open/This.pm::do_something()';
+    my $name = Open::This::_maybe_extract_subroutine_name( \$text );
+    is( $name, 'do_something', 'subroutine name' );
+    is( $text, 'lib/Open/This.pm',   'sub name stripped from path' );
+}
+
+{
     my $text = 'Open::This::do_something()';
     my $name = Open::This::_maybe_extract_subroutine_name( \$text );
     is( $name, 'do_something', 'subroutine name' );
@@ -170,6 +177,12 @@ eq_or_diff(
     [ to_editor_args('t/lib/Foo/Bar.pm line 2') ],
     [ '+2', 't/lib/Foo/Bar.pm', ],
     'open in vim on line 2'
+);
+
+eq_or_diff(
+    [ to_editor_args('t/lib/Foo/Bar.pm::do_something()') ],
+    [ '+3', 't/lib/Foo/Bar.pm', ],
+    'path/to/file::sub_name()'
 );
 
 my $more = parse_text('Test::More');

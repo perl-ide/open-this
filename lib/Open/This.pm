@@ -22,11 +22,11 @@ sub parse_text {
     my $orig;
 
     my $line_number = _maybe_extract_line_number( \$text );
+    my $sub_name    = _maybe_extract_subroutine_name( \$text );
 
     # Is this is an actual file.
     $file_name = $text if -e path($text);
 
-    my $sub_name       = _maybe_extract_subroutine_name( \$text );
     my $is_module_name = is_module_name($text);
 
     if ( !$file_name && $is_module_name ) {
