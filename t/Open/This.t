@@ -38,10 +38,10 @@ use Test::Differences;
 }
 
 {
-    my $text        = 'lib/Open/This.pm::do_something()';
+    my $text = 'lib/Open/This.pm::do_something()';
     my $name = Open::This::_maybe_extract_subroutine_name( \$text );
-    is( $name, 'do_something', 'subroutine name' );
-    is( $text, 'lib/Open/This.pm',   'sub name stripped from path' );
+    is( $name, 'do_something',     'subroutine name' );
+    is( $text, 'lib/Open/This.pm', 'sub name stripped from path' );
 }
 
 {
