@@ -1,6 +1,6 @@
 Revision history for Open-This
 
-{{$NEXT}}
+0.000010  2018-08-22 13:43:42Z
     - Don't rely on a working grep binary
 
 0.000009  2018-08-20 19:33:14Z
