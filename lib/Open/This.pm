@@ -42,10 +42,11 @@ sub parse_text {
         }
     }
 
-    if ( $file_name && $sub_name && $^O ne 'MSWin32' ) {
-        my $grep = `grep -n "sub $sub_name" $file_name`;
-        my @results = split m{:}, $grep;
-        $line_number = shift @results;
+    if ( !$line_number ) {
+        $line_number = _maybe_extract_line_number_via_sub_name(
+            $file_name,
+            $sub_name
+        );
     }
 
     return $file_name
@@ -113,6 +114,21 @@ sub _maybe_extract_subroutine_name {
         return $1;
     }
     return undef;
+}
+
+sub _maybe_extract_line_number_via_sub_name {
+    my $file_name = shift;
+    my $sub_name  = shift;
+
+    if ( $file_name && $sub_name && open( my $fh, '<', $file_name ) ) {
+        my $line_number = 1;
+        while ( my $line = <$fh> ) {
+            if ( $line =~ m{sub $sub_name\b} ) {
+                return $line_number;
+            }
+            ++$line_number;
+        }
+    }
 }
 
 sub _maybe_find_local_file {

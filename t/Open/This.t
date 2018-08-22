@@ -185,6 +185,18 @@ eq_or_diff(
     'path/to/file::sub_name()'
 );
 
+eq_or_diff(
+    [ to_editor_args('t/lib/Foo/Bar.pm::do_something_else()') ],
+    [ '+5', 't/lib/Foo/Bar.pm', ],
+    'path/to/file::do_something_else()'
+);
+
+eq_or_diff(
+    [ to_editor_args('t/lib/Foo/Bar.pm::do_something_else_again()') ],
+    [ '+7', 't/lib/Foo/Bar.pm', ],
+    'path/to/file::do_something_else_again()'
+);
+
 my $more = parse_text('Test::More');
 ok( $more->{file_name}, 'found Test::More on disk' );
 
