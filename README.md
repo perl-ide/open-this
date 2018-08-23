@@ -6,7 +6,7 @@ Open::This - Try to Do the Right Thing when opening files
 
 # VERSION
 
-version 0.000010
+version 0.000011
 
 # DESCRIPTION
 
