@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Open::This;
 
-our $VERSION = '0.000012';
+our $VERSION = '0.000013';
 
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(parse_text to_editor_args);

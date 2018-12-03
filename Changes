@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000012  2018-12-03 19:26:46Z
     - Parse line numbers from the fragments of GitHub URLs
 
