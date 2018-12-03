@@ -60,7 +60,7 @@ sub parse_text {
 
 sub _module_to_filename {
     my $name = shift;
-    return undef unless (defined $name && is_module_name($name));
+    return undef unless ( defined $name && is_module_name($name) );
     try { require_module($name) };
 
     my $notional = module_notional_filename($name);
