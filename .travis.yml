@@ -12,6 +12,9 @@ cache:
     - '~/perl5'
 language: perl
 matrix:
+  allow_failures:
+    -
+      perl: '5.12'
   include:
     -
       env: COVERAGE=1
