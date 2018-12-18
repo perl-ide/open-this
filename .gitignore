@@ -2,5 +2,6 @@
 local/
 /Open-This*
 *.sw*
+.test.requires.git.lock
 .tidyall.d/
 tidyall.ERR
