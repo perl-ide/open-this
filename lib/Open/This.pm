@@ -125,8 +125,12 @@ sub _maybe_extract_line_number {
 
     # git-grep (don't match on ::)
     # lib/Open/This.pm:17
+    if ( $$text =~ s{(\w):(\d+)\b}{$1} ) {
+        return $2;
+    }
+
     # Github links: foo/bar.go#L100
-    if ( $$text =~ s{(\w)[#:](\d+)\b}{$1} ) {
+    if ( $$text =~ s{(\w)#L(\d+)\b}{$1} ) {
         return $2;
     }
 
@@ -209,7 +213,7 @@ Copy/pasting a C<git-grep> result.
 
 Copy/pasting a partial GitHub URL.
 
-    ot lib/Foo/Bar.pm#100 # vim +100 Foo/Bar.pm
+    ot lib/Foo/Bar.pm#L100 # vim +100 Foo/Bar.pm
 
 Open a local file on the GitHub web site in your web browser.  From within a
 checked out copy of https://github.com/oalders/open-this
