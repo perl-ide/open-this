@@ -70,7 +70,7 @@ sub maybe_get_url_from_parsed_text {
     my $parsed = shift;
     return undef unless $parsed && $parsed->{file_name};
 
-    my $url    = Git::Helpers::https_remote_url();
+    my $url = Git::Helpers::https_remote_url();
     return undef unless $url && $url->can('host');
     $parsed->{remote_url} = $url;
 
