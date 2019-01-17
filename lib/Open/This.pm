@@ -190,7 +190,7 @@ sub _maybe_find_local_file {
 
 =head1 DESCRIPTION
 
-This module powers the C<ot> command line script, which tries to do the right
+This module powers the L<ot> command line script, which tries to do the right
 thing when opening a file.  Imagine your C<$ENV{EDITOR}> is set to C<vim>.
 (This should also work for C<emacs> and C<nano>.)  The following examples
 demonstrate how your input is translated when launching your editor.
