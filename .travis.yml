@@ -37,7 +37,7 @@ env:
     - RELEASE_TESTING=0
 before_install:
   - eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules
-  - AUTHOR_TESTING=0 cpanm Code::TidyAll::Plugin::SortLines::Naturally Code::TidyAll::Plugin::UniqueLines Perl::Tidy
+  - AUTHOR_TESTING=0 cpanm --notest Code::TidyAll::Plugin::SortLines::Naturally Code::TidyAll::Plugin::UniqueLines Perl::Tidy
 notifications:
   email:
     on_failure: always
