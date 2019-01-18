@@ -40,7 +40,7 @@ if ($browse) {
 
 my @editor_args = editor_args_from_parsed_text($parsed);
 
-exec $ENV{EDITOR}, @editor_args;
+$ENV{EDITOR} ? exec $ENV{EDITOR}, @editor_args : die('nothing in EDITOR');
 
 # ABSTRACT: parse text and (hopefully) open an editor with the correct arguments
 # PODNAME: ot
