@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000015  2019-01-28 21:43:33Z
     - Don't exec if $EDITOR is empty, die with message (GH#9) (Boris Dppen)
     - Render the command name in description as a link (GH#7) (Boris Dppen)
