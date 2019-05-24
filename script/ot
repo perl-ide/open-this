@@ -68,6 +68,12 @@ disks.  All security caveats apply when requiring 3rd party modules.
     ot "lib/Foo/Bar.pm line 222"
     # Executes $ENV{EDITOR} +222 lib/Foo/Bar.pm
 
+    ot "./lib/Foo/Bar.pm:135:20: blah;"
+    # If you're using vim, opens your file at line 135 and column 20.
+    # Otherwise, executes $ENV{EDITOR} +222 lib/Foo/Bar.pm This is handy if you
+    # use, for example, ripgrep:
+    # rg --vimgrep blah
+
     # open Foo::Bar which is in your lib, t/lib or @INC
     ot Foo::Bar
 
