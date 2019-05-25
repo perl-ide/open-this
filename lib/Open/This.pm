@@ -30,8 +30,10 @@ sub parse_text {
     my $file_name;
     my %parsed = ( original_text => $text );
 
-    $parsed{line_number} = _maybe_extract_line_number( \$text );
-    $parsed{sub_name}    = _maybe_extract_subroutine_name( \$text );
+    my ( $line, $col ) = _maybe_extract_line_number( \$text );
+    $parsed{line_number}   = $line;
+    $parsed{column_number} = $col if $col;
+    $parsed{sub_name}      = _maybe_extract_subroutine_name( \$text );
 
     # Is this is an actual file.
     $parsed{file_name} = $text if -e path($text);
@@ -107,6 +109,19 @@ sub editor_args_from_parsed_text {
     my $parsed = shift;
     return unless $parsed;
 
+    # See https://vi.stackexchange.com/questions/18499/can-i-open-a-file-at-an-arbitrary-line-and-column-via-the-command-line
+    if ( exists $parsed->{column_number}
+        && ( $ENV{EDITOR} eq 'vim' || $ENV{EDITOR} eq 'vi' ) ) {
+        return (
+            sprintf(
+                q{+call cursor(%i,%i)},
+                $parsed->{line_number},
+                $parsed->{column_number},
+            ),
+            $parsed->{file_name}
+        );
+    }
+
     return (
         ( $parsed->{line_number} ? '+' . $parsed->{line_number} : () ),
         $parsed->{file_name}
@@ -121,6 +136,12 @@ sub _maybe_extract_line_number {
 
     if ( $$text =~ s{ line (\d+).*}{} ) {
         return $1;
+    }
+
+    # ripgrep (rg --vimgrep)
+    # ./lib/Open/This.pm:17:3
+    if ( $$text =~ s{(\w):(\d+):(\d+).*}{$1} ) {
+        return $2, $3;
     }
 
     # git-grep (don't match on ::)
