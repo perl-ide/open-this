@@ -92,6 +92,12 @@ disks.  All security caveats apply when requiring 3rd party modules.
     # Open a core module at a function
     ot "Test::More::diag()"
 
+    # Open a binary which is in your $ENV{PATH}
+    ot cpanm
+
+    # Open a binary which is in your $ENV{PATH} at an arbitrary column and line
+    ot cpanm:10:3
+
     # open Foo::Bar on the GitHub web site in your browser
     ot -b Foo::Bar
 
