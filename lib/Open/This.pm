@@ -37,11 +37,20 @@ sub parse_text {
 
     # Is this is an actual file.
     $parsed{file_name} = $text if -e path($text);
+    if ( !exists $parsed{file_name} ) {
+        if ( my $bin = _which($text) ) {
+            $parsed{file_name} = $bin;
+            $text = $bin;
+        }
+    }
 
     $parsed{is_module_name} = is_module_name($text);
 
-    if ( !$parsed{file_name} && $parsed{is_module_name} ) {
-        $parsed{file_name} = _maybe_find_local_file($text);
+    if ( !$parsed{file_name} ) {
+        if ( my $is_module_name = is_module_name($text) ) {
+            $parsed{is_module_name} = $is_module_name;
+            $parsed{file_name}      = _maybe_find_local_file($text);
+        }
     }
 
     # This is a loadable module.  Have this come after the local module checks
@@ -202,6 +211,27 @@ sub _maybe_find_local_file {
         }
     }
     return undef;
+}
+
+# search for binaries in path
+
+sub _which {
+    my $maybe_file = shift;
+    return unless $maybe_file;
+
+    require_module('File::Spec');
+
+    # we only want binary names here -- no paths
+    my ( $volume, $dir, $file ) = File::Spec->splitpath($maybe_file);
+    return if $dir;
+
+    my @path = File::Spec->path;
+    for my $path (@path) {
+        my $abs = path( $path, $file );
+        return $abs->stringify if $abs->is_file;
+    }
+
+    return;
 }
 
 # ABSTRACT: Try to Do the Right Thing when opening files
