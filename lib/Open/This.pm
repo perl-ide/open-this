@@ -119,16 +119,27 @@ sub editor_args_from_parsed_text {
     return unless $parsed;
 
     # See https://vi.stackexchange.com/questions/18499/can-i-open-a-file-at-an-arbitrary-line-and-column-via-the-command-line
-    if ( exists $parsed->{column_number}
-        && ( $ENV{EDITOR} eq 'vim' || $ENV{EDITOR} eq 'vi' ) ) {
-        return (
-            sprintf(
-                q{+call cursor(%i,%i)},
-                $parsed->{line_number},
-                $parsed->{column_number},
-            ),
-            $parsed->{file_name}
-        );
+    if ( exists $parsed->{column_number} ) {
+        if ( $ENV{EDITOR} eq 'vim' || $ENV{EDITOR} eq 'vi' ) {
+            return (
+                sprintf(
+                    q{+call cursor(%i,%i)},
+                    $parsed->{line_number},
+                    $parsed->{column_number},
+                ),
+                $parsed->{file_name}
+            );
+        }
+        if ( $ENV{EDITOR} eq 'nano' ) {
+            return (
+                sprintf(
+                    q{+%i,%i},
+                    $parsed->{line_number},
+                    $parsed->{column_number},
+                ),
+                $parsed->{file_name}
+            );
+        }
     }
 
     return (
