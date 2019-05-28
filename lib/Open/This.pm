@@ -119,6 +119,9 @@ sub editor_args_from_parsed_text {
     return unless $parsed;
 
     # See https://vi.stackexchange.com/questions/18499/can-i-open-a-file-at-an-arbitrary-line-and-column-via-the-command-line
+    # nvim +'call cursor(11,2)' filename
+    # vi   +'call cursor(11,2)' filename
+    # vim  +'call cursor(11,2)' filename
     if ( exists $parsed->{column_number} ) {
         if (   $ENV{EDITOR} eq 'nvim'
             || $ENV{EDITOR} eq 'vi'
@@ -132,6 +135,8 @@ sub editor_args_from_parsed_text {
                 $parsed->{file_name}
             );
         }
+
+        # nano +11,2 filename
         if ( $ENV{EDITOR} eq 'nano' ) {
             return (
                 sprintf(
@@ -144,6 +149,12 @@ sub editor_args_from_parsed_text {
         }
     }
 
+    # emacs +11 filename
+    # nano  +11 filename
+    # nvim  +11 filename
+    # pico  +11 filename
+    # vi    +11 filename
+    # vim   +11 filename
     return (
         ( $parsed->{line_number} ? '+' . $parsed->{line_number} : () ),
         $parsed->{file_name}
