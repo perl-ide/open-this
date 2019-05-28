@@ -46,6 +46,10 @@ sub parse_text {
 
     $parsed{is_module_name} = is_module_name($text);
 
+    if ( !$parsed{file_name} && $text =~ m{\Ahttp}i ) {
+        $parsed{file_name} = _maybe_extract_file_from_url( \$text );
+    }
+
     if ( !$parsed{file_name} ) {
         if ( my $is_module_name = is_module_name($text) ) {
             $parsed{is_module_name} = $is_module_name;
@@ -217,6 +221,29 @@ sub _maybe_extract_line_number_via_sub_name {
             }
             ++$line_number;
         }
+    }
+}
+
+sub _maybe_extract_file_from_url {
+    my $text = shift;
+
+    require_module('URI');
+    my $uri = URI->new($$text);
+
+    my @parts = $uri->path_segments;
+
+    # Is this a GitHub(ish) URL?
+    if ( $parts[3] eq 'blob' ) {
+        my $file = path( @parts[ 5 .. scalar @parts - 1 ] );
+
+        return unless $file->is_file;
+
+        $file = $file->stringify;
+
+        if ( $uri->fragment && $uri->fragment =~ m{\A[\d]\z} ) {
+            $file .= ':' . $uri->fragment;
+        }
+        return $file if $file;
     }
 }
 
