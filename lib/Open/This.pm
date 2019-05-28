@@ -120,7 +120,9 @@ sub editor_args_from_parsed_text {
 
     # See https://vi.stackexchange.com/questions/18499/can-i-open-a-file-at-an-arbitrary-line-and-column-via-the-command-line
     if ( exists $parsed->{column_number} ) {
-        if ( $ENV{EDITOR} eq 'vim' || $ENV{EDITOR} eq 'vi' ) {
+        if (   $ENV{EDITOR} eq 'nvim'
+            || $ENV{EDITOR} eq 'vi'
+            || $ENV{EDITOR} eq 'vim' ) {
             return (
                 sprintf(
                     q{+call cursor(%i,%i)},
