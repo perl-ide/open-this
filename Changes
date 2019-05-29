@@ -1,6 +1,7 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - Parse file paths out of full GitHub URLs. (GH#15) (Olaf Alders)
 
 0.000016  2019-05-27 17:20:10Z
     - Add column number parsing for ripgrep output and add support for opening

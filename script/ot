@@ -101,6 +101,10 @@ disks.  All security caveats apply when requiring 3rd party modules.
     # open Foo::Bar on the GitHub web site in your browser
     ot -b Foo::Bar
 
+    # open a file locally, using a GitHub link.  You must be at the top level
+    # of this repository on a local checkout.
+    ot https://github.com/oalders/git-helpers/blob/master/lib/Git/Helpers.pm#L50
+
 =head1 ENVIRONMENT VARIABLES
 
 By default, C<ot> will search your C<lib> and C<t/lib> directories for local files.  You can override this via the C<$ENV{OPEN_THIS_LIBS}> variable.  It accepts a comma-separated list of libs.
