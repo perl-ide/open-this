@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000017  2019-05-29 18:24:11Z
     - Parse file paths out of full GitHub URLs. (GH#15) (Olaf Alders)
 
