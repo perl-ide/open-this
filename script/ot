@@ -9,6 +9,9 @@ use Open::This qw(
     parse_text
 );
 use Path::Tiny qw( path );
+use Pod::Usage;
+
+pod2usage("Error: missing argument\n") unless @ARGV;
 
 my $browse;
 if ( $ARGV[0] eq '-b' ) {
