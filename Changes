@@ -1,6 +1,6 @@
 Revision history for Open-This
 
-{{$NEXT}}
+0.000018  2019-06-10 17:02:19Z
     - Print usage when ot is called with no arguments (GH#16) (Jos Joaqun
       Atria)
 
