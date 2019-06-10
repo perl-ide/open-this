@@ -9,7 +9,7 @@ use Open::This qw(
     parse_text
 );
 use Path::Tiny qw( path );
-use Pod::Usage;
+use Pod::Usage qw( pod2usage );
 
 pod2usage("Error: missing argument\n") unless @ARGV;
 
