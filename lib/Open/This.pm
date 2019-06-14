@@ -335,6 +335,12 @@ https://github.com/oalders/open-this:
     ot -b Open::This line 50
     # https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L50
 
+=head1 SUPPORTED EDITORS
+
+This code has been well tested with C<vim>.  It should also work with C<nvim>,
+C<emacs>, C<pico>, C<nano> and C<kate>.  Patches for other editors are very
+welcome.
+
 =head1 FUNCTIONS
 
 =head2 parse_text
