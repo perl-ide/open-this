@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000019  2019-06-14 13:49:45Z
     - Add support for Kate editor (GH#17) (Jos Joaqun Atria)
     - Document supported editors
