@@ -35,7 +35,7 @@ sub parse_text {
     $parsed{column_number} = $col if $col;
     $parsed{sub_name}      = _maybe_extract_subroutine_name( \$text );
 
-    # Is this is an actual file.
+    # Is this an actual file.
     $parsed{file_name} = $text if -e path($text);
     if ( !exists $parsed{file_name} ) {
         if ( my $bin = _which($text) ) {
