@@ -35,6 +35,8 @@ sub parse_text {
     $parsed{column_number} = $col if $col;
     $parsed{sub_name}      = _maybe_extract_subroutine_name( \$text );
 
+    _maybe_filter_text( \$text );
+
     # Is this an actual file.
     if ( -e path($text) ) {
         $parsed{file_name} = $text;
@@ -180,6 +182,11 @@ sub editor_args_from_parsed_text {
 sub _maybe_extract_line_number {
     my $text = shift;    # scalar ref
 
+    # Ansible: ": line 14, column 16,"
+    if ( $$text =~ s{ line (\d+).*, column (\d+).*}{} ) {
+        return $1, $2;
+    }
+
     # Find a line number
     #  lib/Foo/Bar.pm line 222.
 
@@ -209,7 +216,18 @@ sub _maybe_extract_line_number {
     if ( $$text =~ s{(\w)-(\d+)\-{0,1}}{$1} ) {
         return $2;
     }
+
     return undef;
+}
+
+sub _maybe_filter_text {
+    my $text = shift;
+
+    # Ansible: The error appears to be in '/path/to/file':
+    if ( $$text =~ m{'(.*)'} ) {
+        my $maybe_file = $1;
+        $$text = $maybe_file if -e $maybe_file;
+    }
 }
 
 sub _maybe_extract_subroutine_name {

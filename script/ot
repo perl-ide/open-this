@@ -110,8 +110,12 @@ disks.  All security caveats apply when requiring 3rd party modules.
 
     # open a file that was mentioned in the output of diff or
     # git diff or git log -p, etc:
+    # (this will open foo/bar if it exists)
     ot a/foo/bar
-    # will open foo/bar if it exists
+
+    # open "/foo/bar.txt" as it appears in an Ansible error message
+    # (Note the quotes around the arg)
+    ot "The error appears to be in '/foo/bar.txt': line 14, column 16, but may be"
 
 
 =head1 ENVIRONMENT VARIABLES
