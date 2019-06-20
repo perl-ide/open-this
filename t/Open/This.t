@@ -242,6 +242,12 @@ eq_or_diff(
     'could have been a git diff file name, but it doesn\'t exist'
 );
 
+eq_or_diff(
+    parse_text('b/t/test-data/i-m-not-here'),
+    undef,
+    'could have been the other variant of a git diff file name, but it doesn\'t exist'
+);
+
 {
     my $text = 't/test-data/file with spaces';
     eq_or_diff(
