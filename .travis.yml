@@ -7,37 +7,44 @@ addons:
 language: perl
 perl:
   - blead
-  - '5.26'
-  - '5.24'
-  - '5.22'
-  - '5.20'
-  - '5.18'
-  - '5.16'
-  - '5.14'
-  - '5.12'
-  - '5.10'
+  - dev
+  - "5.30"
+  - "5.28"
+  - "5.26"
+  - "5.24"
+  - "5.22"
+  - "5.20"
+  - "5.18"
+  - "5.16"
+  - "5.14"
+  - "5.12"
+  - "5.10"
 cache:
   directories:
-    - '~/perl5'
+    - "~/perl5"
 matrix:
   allow_failures:
     - env: COVERAGE=1
-      perl: '5.28'
-    - perl: '5.12'
+      perl: "5.30"
+    - perl: "5.12"
     - perl: blead
+    - perl: dev
   fast_finish: 1
   include:
     - env: AUTHOR_TESTING=1 RELEASE_TESTING=1
-      perl: "5.28"
+      perl: "5.30"
     - env: COVERAGE=1
-      perl: '5.28'
+      perl: "5.30"
 env:
   global:
     - AUTHOR_TESTING=0
     - RELEASE_TESTING=0
 before_install:
-  - eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules
-  - AUTHOR_TESTING=0 cpanm --notest Code::TidyAll::Plugin::SortLines::Naturally Code::TidyAll::Plugin::UniqueLines Perl::Tidy
+  - >
+    eval
+    $(curl https://travis-perl.github.io/init)
+    --auto
+    --always-upgrade-modules
 notifications:
   email:
     on_failure: always
