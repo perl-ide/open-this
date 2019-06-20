@@ -36,7 +36,13 @@ sub parse_text {
     $parsed{sub_name}      = _maybe_extract_subroutine_name( \$text );
 
     # Is this an actual file.
-    $parsed{file_name} = $text if -e path($text);
+    if ( -e path( $text ) ) {
+        $parsed{file_name} = $text;
+    }
+    elsif ( my $file_name = _maybe_git_diff_path( $text )) {
+        $parsed{file_name} = $file_name;
+    }
+
     if ( !exists $parsed{file_name} ) {
         if ( my $bin = _which($text) ) {
             $parsed{file_name} = $bin;
@@ -267,6 +273,18 @@ sub _maybe_find_local_file {
             return "$path";
         }
     }
+    return undef;
+}
+
+sub _maybe_git_diff_path {
+    my $file_name = shift;
+
+    if ( $file_name =~ m|^[ab]/(.+)$| ) {
+        if ( -e path( $1 ) ) {
+            return $1;
+        }
+    }
+
     return undef;
 }
 
