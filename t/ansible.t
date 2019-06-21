@@ -10,7 +10,7 @@ use Test::Warnings;
 # This gets really noisy on Travis if $ENV{EDITOR} is not set
 local $ENV{EDITOR} = 'vim';
 
-my $path = path('t/lib/Foo/Bar.pm')->absolute;
+my $path = path('t/test-data/file-with-numbers-0.000020.txt')->absolute;
 
 my @snippets = (
     qq{The error appears to be in '$path': line 14, column 16, but may be elsewhere in the file depending on the exact syntax problem.},
