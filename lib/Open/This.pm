@@ -12,6 +12,8 @@ our @EXPORT_OK = qw(
     to_editor_args
 );
 
+use Module::Util;
+
 use Module::Runtime qw(
     is_module_name
     module_notional_filename
@@ -68,7 +70,7 @@ sub parse_text {
     # This is a loadable module.  Have this come after the local module checks
     # so that we don't default to installed modules.
     if ( !$parsed{file_name} && $parsed{is_module_name} ) {
-        my $found = _module_to_filename($text);
+        my $found = Module::Util::find_installed($text);
         if ($found) {
             $parsed{file_name} = $found;
         }
@@ -110,16 +112,6 @@ sub maybe_get_url_from_parsed_text {
 
     $parsed->{remote_file_url} = $clone;
     return $clone;
-}
-
-sub _module_to_filename {
-    my $name = shift;
-    return undef unless ( defined $name && is_module_name($name) );
-    try { require_module($name) };
-
-    my $notional = module_notional_filename($name);
-
-    return exists $INC{$notional} ? $INC{$notional} : undef;
 }
 
 sub to_editor_args {
