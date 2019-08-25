@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000021  2019-08-25 17:11:12Z
     - Use Module::Util to find modules without requiring them (GH#24) (José Joaquín Atria)
 
