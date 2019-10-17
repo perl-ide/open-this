@@ -56,7 +56,7 @@ sub parse_text {
 
     $parsed{is_module_name} = is_module_name($text);
 
-    if ( !$parsed{file_name} && $text =~ m{\Ahttp}i ) {
+    if ( !$parsed{file_name} && $text =~ m{\Ahttps?://}i ) {
         $parsed{file_name} = _maybe_extract_file_from_url( \$text );
     }
 
