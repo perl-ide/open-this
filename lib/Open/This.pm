@@ -60,11 +60,8 @@ sub parse_text {
         $parsed{file_name} = _maybe_extract_file_from_url( \$text );
     }
 
-    if ( !$parsed{file_name} ) {
-        if ( my $is_module_name = is_module_name($text) ) {
-            $parsed{is_module_name} = $is_module_name;
-            $parsed{file_name}      = _maybe_find_local_file($text);
-        }
+    if ( !$parsed{file_name} && $parsed{is_module_name} ) {
+        $parsed{file_name} = _maybe_find_local_file($text);
     }
 
     # This is a loadable module.  Have this come after the local module checks
