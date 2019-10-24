@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000022  2019-10-24 01:53:11Z
     - Avoid false positives when testing URLs (GH#27) (José Joaquín Atria)
     - Avoid calling is_module_name twice in parse_text (GH#28) (José Joaquín Atria)
