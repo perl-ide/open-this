@@ -17,7 +17,7 @@ perl:
   - "5.18"
   - "5.16"
   - "5.14"
-  - "5.12"
+  - "5.12" # not sure why the tests fail on this Perl
   - "5.10"
 cache:
   directories:
