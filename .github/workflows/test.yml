@@ -11,17 +11,11 @@ jobs:
     strategy:
       max-parallel: 1
     container:
-      image: perl:5.30
+      image: oalders/developer-perl
     steps:
       - uses: actions/checkout@v1
       - name: perl -V
         run: perl -V
-      - name: Install cpanm
-        run: curl -sL https://cpanmin.us/ | perl - App::cpanminus
-      - name: Install cpm
-        run: cpanm -nq App::cpm
-      - name: Install dzil
-        run: cpm install -g Dist::Zilla
       - name: Install author deps
         run: dzil authordeps | xargs cpm install -g
       - name: Maybe debug Install author deps
