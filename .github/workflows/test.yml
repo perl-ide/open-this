@@ -46,7 +46,7 @@ jobs:
           - "5.28"
           - "5.30"
     container:
-      image: perl:${{ matrix.perl-version }}
+      image: oalders/tester-perl:${{ matrix.perl-version }}
       env:
         AUTHOR_TESTING: 1
         RELEASE_TESTING: 1
@@ -57,13 +57,6 @@ jobs:
           name: build_dir
       - name: chdir to build dir
         run: cd build_dir
-      - name: install pkgs
-        run: apt-get update && apt-get -y install aspell aspell-en
-      - name: Install cpanm
-        run: curl -sL https://cpanmin.us/ | perl - App::cpanminus
-      - name: Install cpm
-        if: success()
-        run: cpanm -nq App::cpm
       - name: Install deps
         if: success()
         run: cpm install -g --cpanfile cpanfile --with-develop --with-suggests
