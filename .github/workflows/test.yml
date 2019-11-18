@@ -68,7 +68,7 @@ jobs:
         if: success() && matrix.perl-version == env.PERL_COVERAGE_VERSION
         env:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-          HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/"
+          HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
         run: prove -lvr --jobs 2 t && cover -report codecov
       - name: Run Tests
         if: success() && matrix.perl-version != env.PERL_COVERAGE_VERSION
