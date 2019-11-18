@@ -56,11 +56,9 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: build_dir
-      - name: chdir to build dir
-        run: cd build_dir && ls && apt-get install -y tree && tree
       - name: Install deps
         if: success()
-        run: cpm install -g --cpanfile cpanfile --with-develop --with-suggests
+        run: cd build_dir && cpm install -g --cpanfile cpanfile --with-develop --with-suggests
       - name: Maybe debug Install deps
         if: failure()
         run: cat ~/.perl-cpm/build.log
@@ -69,7 +67,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
           HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
-        run: prove -lvr --jobs 2 t xt && cover -report codecov
+        run: cd build_dir && prove -lvr --jobs 2 t xt && cover -report codecov
       - name: Run Tests
         if: success() && matrix.perl-version != env.PERL_COVERAGE_VERSION
-        run: ls && prove -lvr --jobs 2 t xt
+        run: cd build_dir && prove -lvr --jobs 2 t xt
