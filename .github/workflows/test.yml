@@ -57,7 +57,7 @@ jobs:
         with:
           name: build_dir
       - name: chdir to build dir
-        run: cd build_dir
+        run: cd build_dir && ls
       - name: Install deps
         if: success()
         run: cpm install -g --cpanfile cpanfile --with-develop --with-suggests
