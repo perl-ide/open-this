@@ -27,6 +27,17 @@ jobs:
         with:
           name: build_dir
           path: dzil_build_dir
+      - name: Install deps
+        if: success()
+        run: cd dzil_build_dir && cpm install -g --cpanfile cpanfile --with-develop --with-suggests
+      - name: Run Tests with coverage
+        if: success()
+        env:
+          AUTHOR_TESTING: 1
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+          HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
+          RELEASE_TESTING: 1
+        run: cpm install -g Devel::Cover::Report::Codecov && cd dzil_build_dir && prove -lvr --jobs 2 t xt && cover -report codecov
   test:
     runs-on: ubuntu-latest
     name: Test distribution
@@ -49,27 +60,18 @@ jobs:
       image: oalders/tester-perl:${{ matrix.perl-version }}
       env:
         AUTHOR_TESTING: 1
-        PERL_COVERAGE_VERSION: 5.30
         RELEASE_TESTING: 1
     steps:
-      - uses: actions/checkout@v1
       - uses: actions/download-artifact@master
         with:
           name: build_dir
-      - name: chdir to build dir
-        run: cd build_dir
+          path: .
       - name: Install deps
         if: success()
         run: cpm install -g --cpanfile cpanfile --with-develop --with-suggests
       - name: Maybe debug Install deps
         if: failure()
         run: cat ~/.perl-cpm/build.log
-      - name: Run Tests with coverage
-        if: success() && matrix.perl-version == env.PERL_COVERAGE_VERSION
-        env:
-          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-          HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
-        run: prove -lvr --jobs 2 t xt && cover -report codecov
       - name: Run Tests
-        if: success() && matrix.perl-version != env.PERL_COVERAGE_VERSION
+        if: success()
         run: prove -lvr --jobs 2 t xt
