@@ -52,7 +52,6 @@ jobs:
         PERL_COVERAGE_VERSION: 5.30
         RELEASE_TESTING: 1
     steps:
-      - uses: actions/checkout@v1
       - uses: actions/download-artifact@master
         with:
           name: build_dir
