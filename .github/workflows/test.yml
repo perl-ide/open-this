@@ -49,7 +49,6 @@ jobs:
       image: oalders/tester-perl:${{ matrix.perl-version }}
       env:
         AUTHOR_TESTING: 1
-        PERL_COVERAGE_VERSION: "5.30"
         RELEASE_TESTING: 1
     steps:
       - uses: actions/download-artifact@master
@@ -63,11 +62,11 @@ jobs:
         if: failure()
         run: cat ~/.perl-cpm/build.log
       - name: Run Tests with coverage
-        if: success() && matrix.perl-version == env.PERL_COVERAGE_VERSION
+        if: success() && matrix.perl-version == 5.30
         env:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
           HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
         run: prove -lvr --jobs 2 t xt && cover -report codecov
       - name: Run Tests
-        if: success() && matrix.perl-version != env.PERL_COVERAGE_VERSION
+        if: success() && matrix.perl-version != 5.30
         run: prove -lvr --jobs 2 t xt
