@@ -27,6 +27,17 @@ jobs:
         with:
           name: build_dir
           path: dzil_build_dir
+      - name: Install deps
+        if: success()
+        run: cd dzil_build_dir && cpm install -g --cpanfile cpanfile --with-develop --with-suggests
+      - name: Run Tests with coverage
+        if: success()
+        env:
+          AUTHOR_TESTING: 1
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+          HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
+          RELEASE_TESTING: 1
+        run: cpm install -g Devel::Cover::Report::Codecov && cd dzil_build_dir && prove -lvr --jobs 2 t xt && cover -report codecov
   test:
     runs-on: ubuntu-latest
     name: Test distribution
@@ -61,12 +72,6 @@ jobs:
       - name: Maybe debug Install deps
         if: failure()
         run: cat ~/.perl-cpm/build.log
-      - name: Run Tests with coverage
-        if: success() && matrix.perl-version == 5.30
-        env:
-          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-          HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
-        run: prove -lvr --jobs 2 t xt && cpm install -g Devel::Cover::Report::Codecov && cover -report codecov
       - name: Run Tests
-        if: success() && matrix.perl-version != 5.30
+        if: success()
         run: prove -lvr --jobs 2 t xt
