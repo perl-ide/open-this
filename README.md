@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/oalders/open-this.svg?branch=master)](https://travis-ci.org/oalders/open-this)
-[![Actions Status](https://github.com/oalders/open-this/workflows/Run tests/badge.svg)](https://github.com/oalders/open-this/actions)
+[![Actions Status](https://github.com/oalders/open-this/workflows/test/badge.svg)](https://github.com/oalders/open-this/actions)
 [![Coverage Status](https://coveralls.io/repos/oalders/open-this/badge.svg?branch=master)](https://coveralls.io/r/oalders/open-this?branch=master)
 [![codecov](https://codecov.io/gh/oalders/open-this/branch/master/graph/badge.svg)](https://codecov.io/gh/oalders/open-this)
 [![Kwalitee status](http://cpants.cpanauthors.org/dist/Open-This.png)](http://cpants.charsbar.org/dist/overview/Open-This)
