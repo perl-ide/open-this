@@ -1,8 +1,14 @@
+[![Build Status](https://travis-ci.org/oalders/open-this.svg?branch=master)](https://travis-ci.org/oalders/open-this)
+[![Actions Status](https://github.com/oalders/open-this/workflows/Run tests/badge.svg)](https://github.com/oalders/open-this/actions)
+[![Coverage Status](https://coveralls.io/repos/oalders/open-this/badge.svg?branch=master)](https://coveralls.io/r/oalders/open-this?branch=master)
+[![codecov](https://codecov.io/gh/oalders/open-this/branch/master/graph/badge.svg)](https://codecov.io/gh/oalders/open-this)
+[![Kwalitee status](http://cpants.cpanauthors.org/dist/Open-This.png)](http://cpants.charsbar.org/dist/overview/Open-This)
+[![GitHub tag](https://img.shields.io/github/tag/oalders/open-this.svg)]()
+[![Cpan license](https://img.shields.io/cpan/l/Open-This.svg)](https://metacpan.org/release/Open-This)
+
 # NAME
 
 Open::This - Try to Do the Right Thing when opening files
-
-[![Build Status](https://travis-ci.org/oalders/open-this.png?branch=master)](https://travis-ci.org/oalders/open-this)
 
 # VERSION
 
@@ -116,7 +122,7 @@ Olaf Alders <olaf@wundercounter.com>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2018 by Olaf Alders.
+This software is copyright (c) 2018-2019 by Olaf Alders.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
