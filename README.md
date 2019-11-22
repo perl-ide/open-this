@@ -2,7 +2,7 @@
 [![Actions Status](https://github.com/oalders/open-this/workflows/test/badge.svg)](https://github.com/oalders/open-this/actions)
 [![Coverage Status](https://coveralls.io/repos/oalders/open-this/badge.svg?branch=master)](https://coveralls.io/r/oalders/open-this?branch=master)
 [![codecov](https://codecov.io/gh/oalders/open-this/branch/master/graph/badge.svg)](https://codecov.io/gh/oalders/open-this)
-[![Kwalitee status](http://cpants.cpanauthors.org/dist/Open-This.png)](http://cpants.charsbar.org/dist/overview/Open-This)
+[![Kwalitee status](http://cpants.cpanauthors.org/dist/Open-This.png)](https://cpants.cpanauthors.org/dist/Open-This)
 [![GitHub tag](https://img.shields.io/github/tag/oalders/open-this.svg)]()
 [![Cpan license](https://img.shields.io/cpan/l/Open-This.svg)](https://metacpan.org/release/Open-This)
 
