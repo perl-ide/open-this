@@ -17,10 +17,7 @@ jobs:
       - name: perl -V
         run: perl -V
       - name: Install author deps
-        run: dzil authordeps | xargs cpm install -g
-      - name: Maybe debug Install author deps
-        if: failure()
-        run: cat ~/.perl-cpm/build.log
+        run: dzil authordeps | xargs cpm install -g --show-build-log-on-failure
       - name: Build
         run: dzil build --no-tgz --in dzil_build_dir
       - uses: actions/upload-artifact@master
@@ -29,7 +26,13 @@ jobs:
           path: dzil_build_dir
       - name: Install deps
         if: success()
-        run: cd dzil_build_dir && cpm install -g --cpanfile cpanfile --with-develop --with-suggests
+        run: >
+          cd dzil_build_dir
+          && cpm install -g
+          --cpanfile cpanfile
+          --with-develop
+          --with-suggests
+          --show-build-log-on-failure
       - name: Run Tests with coverage
         if: success()
         env:
@@ -37,7 +40,13 @@ jobs:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
           HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
           RELEASE_TESTING: 1
-        run: cpm install -g Devel::Cover::Report::Codecov && cd dzil_build_dir && prove -lvr --jobs 2 t xt && cover -report codecov
+        run: >
+          cpm install -g
+          --show-build-log-on-failure
+          Devel::Cover::Report::Codecov &&
+          cd dzil_build_dir
+          && prove -lvr --jobs 2 t xt
+          && cover -report codecov
   test:
     runs-on: ubuntu-latest
     name: Test distribution
@@ -68,10 +77,12 @@ jobs:
           path: .
       - name: Install deps
         if: success()
-        run: cpm install -g --cpanfile cpanfile --with-develop --with-suggests
-      - name: Maybe debug Install deps
-        if: failure()
-        run: cat ~/.perl-cpm/build.log
+        run: >
+          cpm install -g
+          --cpanfile cpanfile
+          --with-develop
+          --with-suggests
+          --show-build-log-on-failure
       - name: Run Tests
         if: success()
         run: prove -lvr --jobs 2 t xt
