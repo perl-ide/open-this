@@ -13,7 +13,7 @@ jobs:
     container:
       image: oalders/developer-perl
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2.1.0
       - name: perl -V
         run: perl -V
       - name: Install author deps
