@@ -13,22 +13,22 @@ local $ENV{EDITOR} = 'vim';
 {
     my $text        = 'lib/Foo/Bar.pm line 222.';
     my $line_number = Open::This::_maybe_extract_line_number( \$text );
-    is( $line_number, 222, 'line_number' );
-    is( $text, 'lib/Foo/Bar.pm', 'line number stripped' );
+    is( $line_number, 222,              'line_number' );
+    is( $text,        'lib/Foo/Bar.pm', 'line number stripped' );
 }
 
 {
     my $text        = 'lib/Open/This.pm:17';
     my $line_number = Open::This::_maybe_extract_line_number( \$text );
-    is( $line_number, 17, 'git-grep line_number' );
-    is( $text, 'lib/Open/This.pm', 'git-grep line number stripped' );
+    is( $line_number, 17,                 'git-grep line_number' );
+    is( $text,        'lib/Open/This.pm', 'git-grep line number stripped' );
 }
 
 {
     my $text        = 'lib/Open/This.pm#L17';
     my $line_number = Open::This::_maybe_extract_line_number( \$text );
-    is( $line_number, 17, 'GitHub line_number' );
-    is( $text, 'lib/Open/This.pm', 'GitHub line number stripped' );
+    is( $line_number, 17,                 'GitHub line_number' );
+    is( $text,        'lib/Open/This.pm', 'GitHub line number stripped' );
 }
 
 {
