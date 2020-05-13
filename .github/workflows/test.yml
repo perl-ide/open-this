@@ -48,6 +48,9 @@ jobs:
           cd dzil_build_dir
           && prove -lvr --jobs 2 t xt
           && cover -report codecov
+      - name: Maybe run tidyall
+        if: failure()
+        run: tidyall -a && git diff > diff.txt && cat diff.txt
   test:
     runs-on: ubuntu-latest
     name: Test distribution
