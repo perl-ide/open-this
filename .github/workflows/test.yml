@@ -50,7 +50,15 @@ jobs:
           && cover -report codecov
       - name: Maybe run tidyall
         if: failure()
-        run: tidyall -a && git diff > diff.txt && cat diff.txt
+        run: >
+          pwd &&
+          mkdir -p ${{ github.workspace }}/artifact &&
+          git reset --hard &&
+          tidyall -a && git diff > ${{ github.workspace }}/artifact/diff.txt &&
+          git status
+      - uses: actions/upload-artifact@master
+        with:
+          path: ${{ github.workspace }}/artifact/*
   test:
     runs-on: ubuntu-latest
     name: Test distribution
