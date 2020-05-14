@@ -49,16 +49,14 @@ jobs:
           && prove -lvr --jobs 2 t xt
           && cover -report codecov
       - name: Maybe run tidyall
-        if: failure()
+        if: failure() && github.event_name == 'pull_request'
         run: >
-          pwd &&
-          mkdir -p ${{ github.workspace }}/artifact &&
           git reset --hard &&
-          tidyall -a && git diff > ${{ github.workspace }}/artifact/diff.txt &&
-          git status
-      - uses: actions/upload-artifact@master
-        with:
-          path: ${{ github.workspace }}/artifact/*
+          tidyall -a && git add lib script t &&
+          git commit -m "Tidy"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v2
+        if: success() && github.event_name == 'pull_request'
   test:
     runs-on: ubuntu-latest
     name: Test distribution
