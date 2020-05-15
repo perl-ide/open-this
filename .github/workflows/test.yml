@@ -40,6 +40,8 @@ jobs:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
           HARNESS_PERL_SWITCHES: "-MDevel::Cover=+ignore,^local/|^t/|^xt"
           RELEASE_TESTING: 1
+          TEST_TIDYALL_JOBS: 2
+          TEST_TIDYALL_VERBOSE: 1
         run: >
           cpm install -g
           --show-build-log-on-failure
