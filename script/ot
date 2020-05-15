@@ -117,6 +117,8 @@ disks.  All security caveats apply when requiring 3rd party modules.
     # (Note the quotes around the arg)
     ot "The error appears to be in '/foo/bar.txt': line 14, column 16, but may be"
 
+    # open "/foo/bar.java:[3,5]" as it appears in Maven's test output
+    ot /foo/bar.java:[3,5]
 
 =head1 ENVIRONMENT VARIABLES
 
