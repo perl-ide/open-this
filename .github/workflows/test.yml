@@ -20,6 +20,8 @@ jobs:
         run: dzil authordeps | xargs cpm install -g --show-build-log-on-failure
       - name: Build
         run: dzil build --no-tgz --in dzil_build_dir
+      - name: Maybe upgrade Perl::Tidy
+        run: cpm install -g Perl::Tidy
       - uses: actions/upload-artifact@master
         with:
           name: build_dir
@@ -85,6 +87,8 @@ jobs:
           --with-develop
           --with-suggests
           --show-build-log-on-failure
+      - name: Maybe upgrade Perl::Tidy
+        run: cpm install -g Perl::Tidy
       - name: Run Tests
         if: success()
         run: prove -lr --jobs 2 t xt
