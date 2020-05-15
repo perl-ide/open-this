@@ -51,6 +51,18 @@ local $ENV{EDITOR} = 'vim';
 }
 
 {
+    my $text = './lib/Open/This.pm:[17,3]';
+    my ( $line_number, $column_number )
+        = Open::This::_maybe_extract_line_number( \$text );
+    is( $line_number,   17, 'mvn test line_number' );
+    is( $column_number, 3,  'mvn test column_number' );
+    is(
+        $text, './lib/Open/This.pm',
+        'mvn test context line number and column number stripped'
+    );
+}
+
+{
     my $text = './lib/Open/This.pm:135:20:sub _maybe_extract_line_number {';
     my ( $line_number, $column_number )
         = Open::This::_maybe_extract_line_number( \$text );

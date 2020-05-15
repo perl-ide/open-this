@@ -183,6 +183,12 @@ sub _maybe_extract_line_number {
         return $1;
     }
 
+    # mvn test output
+    # lib/Open/This.pm:[17,3]
+    if ( $$text =~ s{ (\w) : \[ (\d+) , (\d+) \] }{$1}x ) {
+        return $2, $3;
+    }
+
     # ripgrep (rg --vimgrep)
     # ./lib/Open/This.pm:17:3
     if ( $$text =~ s{(\w):(\d+):(\d+).*}{$1} ) {
