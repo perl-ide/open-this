@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000023  2020-05-20 18:39:49Z
     - Parse file paths from "mvn test" output (GH#33) (Olaf Alders)
 
