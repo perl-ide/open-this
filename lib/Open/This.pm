@@ -29,7 +29,6 @@ sub parse_text {
     my $text = join q{ }, @_;
 
     return undef if !$text;
-    my $file_name;
     my %parsed = ( original_text => $text );
 
     my ( $line, $col ) = _maybe_extract_line_number( \$text );
