@@ -1,5 +1,4 @@
 [![Actions Status](https://github.com/oalders/open-this/workflows/test/badge.svg)](https://github.com/oalders/open-this/actions)
-[![Coverage Status](https://coveralls.io/repos/oalders/open-this/badge.svg?branch=master)](https://coveralls.io/r/oalders/open-this?branch=master)
 [![codecov](https://codecov.io/gh/oalders/open-this/branch/master/graph/badge.svg)](https://codecov.io/gh/oalders/open-this)
 [![Kwalitee status](http://cpants.cpanauthors.org/dist/Open-This.png)](https://cpants.cpanauthors.org/dist/Open-This)
 [![GitHub tag](https://img.shields.io/github/tag/oalders/open-this.svg)]()
@@ -11,7 +10,7 @@ Open::This - Try to Do the Right Thing when opening files
 
 # VERSION
 
-version 0.000023
+version 0.000024
 
 # DESCRIPTION
 
@@ -39,6 +38,11 @@ Copy/pasting a `git-grep` result.
 Copy/pasting a partial GitHub URL.
 
     ot lib/Foo/Bar.pm#L100 # vim +100 Foo/Bar.pm
+
+Copy/pasting a full GitHub URL.
+
+    ot https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L17-L21
+    # vim +17 lib/Open/This.pm
 
 Open a local file on the GitHub web site in your web browser.  From within a
 checked out copy of https://github.com/oalders/open-this
