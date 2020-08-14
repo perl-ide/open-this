@@ -1,6 +1,9 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - Deal more gracefully with GitHub line number ranges (GH#37) (Olaf Alders)
+    - Remove redundant variable (GH#35) (Novgorodcev Cyrill)
+    - Fix contributor name (GH#34) (Boris Däppen)
 
 0.000023  2020-05-20 18:39:49Z
     - Parse file paths from "mvn test" output (GH#33) (Olaf Alders)
