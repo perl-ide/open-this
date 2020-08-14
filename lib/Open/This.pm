@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Open::This;
 
-our $VERSION = '0.000024';
+our $VERSION = '0.000025';
 
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(

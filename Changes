@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000024  2020-08-14 15:36:10Z
     - Deal more gracefully with GitHub line number ranges (GH#37) (Olaf Alders)
     - Remove redundant variable (GH#35) (Novgorodcev Cyrill)
