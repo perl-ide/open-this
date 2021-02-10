@@ -12,16 +12,15 @@ our @EXPORT_OK = qw(
     to_editor_args
 );
 
-use Module::Util;
-
 use Module::Runtime qw(
     is_module_name
     module_notional_filename
     require_module
 );
+use Module::Util ();
 use Path::Tiny qw( path );
-use Try::Tiny qw( try );
-use URI qw();
+use Try::Tiny ();
+use URI ();
 
 ## no critic (Subroutines::ProhibitExplicitReturnUndef)
 
