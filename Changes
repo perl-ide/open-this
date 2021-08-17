@@ -1,6 +1,6 @@
 Revision history for Open-This
 
-{{$NEXT}}
+0.000025  2021-08-17 19:33:19Z
     - Move Test::Simple to test requires from runtime requires (GH#38) (Olaf
       Alders)
 
