@@ -3,7 +3,7 @@ use warnings;
 
 use Open::This qw( parse_text to_editor_args );
 use Path::Tiny qw( path );
-use Test::More;
+use Test::More import => [ 'done_testing', 'is', 'ok' ];
 use Test::Differences qw( eq_or_diff );
 use Test::Warnings ();
 
