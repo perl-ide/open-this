@@ -1,6 +1,6 @@
 Revision history for Open-This
 
-{{$NEXT}}
+0.000026  2021-10-19 21:29:37Z
     - Override $ENV{EDITOR} via -e|--editor (GH#40) (Olaf Alders)
     - Avoid invoking an editor via -p|--print (GH#40) (Olaf Alders)
 
