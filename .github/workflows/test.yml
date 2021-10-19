@@ -92,8 +92,7 @@ jobs:
         uses: perl-actions/install-with-cpm@v1.3
         with:
           cpanfile: "cpanfile"
-          args: "--with-suggests --with-recommends --with-test"
-      - run: prove -l t xt
+      - run: prove -lr t
         env:
-          AUTHOR_TESTING: 1
-          RELEASE_TESTING: 1
+          AUTHOR_TESTING: 0
+          RELEASE_TESTING: 0
