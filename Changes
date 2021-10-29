@@ -1,6 +1,6 @@
 Revision history for Open-This
 
-{{$NEXT}}
+0.000027  2021-10-29 21:59:06Z
     - Trim text before parsing it (GH#42) (Olaf Alders)
 
 0.000026  2021-10-19 21:29:37Z
