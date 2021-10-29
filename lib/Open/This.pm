@@ -26,6 +26,10 @@ use URI ();
 sub parse_text {
     my $text = join q{ }, @_;
 
+    if ($text) {
+        $text =~ s/^\s+|\s+$//g;
+    }
+
     return undef if !$text;
     my %parsed = ( original_text => $text );
 

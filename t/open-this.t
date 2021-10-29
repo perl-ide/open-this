@@ -137,13 +137,13 @@ local $ENV{EDITOR} = 'vim';
 }
 
 {
-    my $text = 't/lib/Foo/Bar.pm line 222.';
+    my $text = " \n t/lib/Foo/Bar.pm line 222. \n";
     eq_or_diff(
         parse_text($text),
         {
             file_name     => 't/lib/Foo/Bar.pm',
             line_number   => 222,
-            original_text => $text,
+            original_text => 't/lib/Foo/Bar.pm line 222.',
         },
         'line 222'
     );

@@ -1,6 +1,7 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - Trim text before parsing it (GH#42) (Olaf Alders)
 
 0.000026  2021-10-19 21:29:37Z
     - Override $ENV{EDITOR} via -e|--editor (GH#40) (Olaf Alders)
