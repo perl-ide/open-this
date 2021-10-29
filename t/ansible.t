@@ -55,12 +55,15 @@ for my $original_text (@snippets) {
 }
 
 {
-    my $text = qq{'$path': };
+    $path = $path->relative;
+    my $text    = qq{'$path': };
+    my $chomped = qq{'$path':};
+
     eq_or_diff(
         parse_text($text),
         {
-            file_name     => $path->absolute->stringify,
-            original_text => $text,
+            file_name     => $path->stringify,
+            original_text => $chomped,
         },
         'parse_text without line'
     );
