@@ -30,6 +30,11 @@ sub parse_text {
         $text =~ s/^\s+|\s+$//g;
     }
 
+    # Don't fail on a trailing colon which was accidentally pasted.
+    if ($text) {
+        $text =~ s{:\z}{};
+    }
+
     return undef if !$text;
     my %parsed = ( original_text => $text );
 
