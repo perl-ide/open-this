@@ -1,6 +1,7 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - strip trailing colons before parsing text (GH#44) (Olaf Alders)
 
 0.000028  2021-11-09 14:19:42Z
    - Document how to call ot from within vim (GH#43) (Olaf Alders)
