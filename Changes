@@ -1,6 +1,7 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - Make Git::Helpers optional (GH#46) (Olaf Alders)
 
 0.000029  2021-12-18 02:31:46Z
     - strip trailing colons before parsing text (GH#44) (Olaf Alders)
