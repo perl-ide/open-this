@@ -19,6 +19,7 @@ use Module::Runtime qw(
 );
 use Module::Util ();
 use Path::Tiny qw( path );
+use Try::Tiny qw( catch try );
 use URI ();
 
 ## no critic (Subroutines::ProhibitExplicitReturnUndef)
@@ -93,7 +94,18 @@ sub parse_text {
 }
 
 sub maybe_get_url_from_parsed_text {
-    require Git::Helpers;
+    my $err;
+    try {
+        require_module('Git::Helpers');
+    }
+    catch {
+        $err = $_;
+    };
+
+    if ($err) {
+        warn 'This feature requires Git::Helpers to be installed';
+        return;
+    }
 
     my $parsed = shift;
     return undef unless $parsed && $parsed->{file_name};
