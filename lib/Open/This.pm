@@ -157,7 +157,7 @@ sub editor_args_from_parsed_text {
             || $ENV{EDITOR} eq 'vi'
             || $ENV{EDITOR} eq 'vim' ) {
             @args = sprintf(
-                q{+call cursor(%i,%i)},
+                '+call cursor(%i,%i)',
                 $parsed->{line_number},
                 $parsed->{column_number},
             );
@@ -166,7 +166,7 @@ sub editor_args_from_parsed_text {
         # nano +11,2 filename
         if ( $ENV{EDITOR} eq 'nano' ) {
             @args = sprintf(
-                q{+%i,%i},
+                '+%i,%i',
                 $parsed->{line_number},
                 $parsed->{column_number},
             );
