@@ -18,9 +18,9 @@ use Module::Runtime qw(
     require_module
 );
 use Module::Util ();
-use Path::Tiny qw( path );
-use Try::Tiny qw( catch try );
-use URI ();
+use Path::Tiny   qw( path );
+use Try::Tiny    qw( catch try );
+use URI          ();
 
 ## no critic (Subroutines::ProhibitExplicitReturnUndef)
 
