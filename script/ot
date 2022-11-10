@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Getopt::Long qw( GetOptions );
-use Open::This qw(
+use Open::This   qw(
     editor_args_from_parsed_text
     maybe_get_url_from_parsed_text
     parse_text
