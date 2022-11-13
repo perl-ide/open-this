@@ -309,6 +309,19 @@ eq_or_diff(
     );
 }
 
+{
+    my $text = 'test.go:4';
+    eq_or_diff(
+        parse_text($text),
+        {
+            file_name     => 't/test-data/foo/bar/test.go',
+            line_number   => 4,
+            original_text => $text,
+        },
+        'find a go file'
+    );
+}
+
 eq_or_diff(
     [ to_editor_args('t/test-data/file with spaces') ],
     ['t/test-data/file with spaces'],
