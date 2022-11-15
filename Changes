@@ -1,6 +1,7 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - Search recursively for .go files (GH#47) (E. Choroba)
 
 0.000030  2022-01-11 17:30:15Z
     - Make Git::Helpers optional (GH#46) (Olaf Alders)
