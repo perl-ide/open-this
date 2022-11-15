@@ -322,6 +322,15 @@ eq_or_diff(
     );
 }
 
+{
+    my $text = 'notest.go:4';
+    eq_or_diff(
+        parse_text($text),
+        undef,
+        'cannot find go file'
+    );
+}
+
 eq_or_diff(
     [ to_editor_args('t/test-data/file with spaces') ],
     ['t/test-data/file with spaces'],

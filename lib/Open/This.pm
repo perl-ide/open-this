@@ -57,13 +57,15 @@ sub parse_text {
         my $threshold_init = 5000;
         my $iter           = path('.')->iterator( { recurse => 1 } );
         my $threshold      = $threshold_init;
-        while ( $threshold-- > 0 ) {
-            my $path = $iter->();
+        while ( my $path = $iter->() ) {
+            next unless $path->is_file;    # dirs will never match anything
             ( $threshold, $parsed{file_name} ) = ( 0, "$path" )
                 if $path->basename eq $text;
+            last if --$threshold == 0;
         }
-        warn "Only $threshold_init files searched recursively"
-            unless exists $parsed{file_name};
+        if ( $threshold == 0 && !exists $parsed{file_name} ) {
+            warn "Only $threshold_init files searched recursively";
+        }
     }
 
     if ( !exists $parsed{file_name} ) {
