@@ -54,18 +54,8 @@ sub parse_text {
         $parsed{file_name} = $file_name;
     }
     elsif ( $text =~ m{^[^/]+\.go$} ) {
-        my $threshold_init = 5000;
-        my $iter           = path('.')->iterator( { recurse => 1 } );
-        my $threshold      = $threshold_init;
-        while ( my $path = $iter->() ) {
-            next unless $path->is_file;    # dirs will never match anything
-            ( $threshold, $parsed{file_name} ) = ( 0, "$path" )
-                if $path->basename eq $text;
-            last if --$threshold == 0;
-        }
-        if ( $threshold == 0 && !exists $parsed{file_name} ) {
-            warn "Only $threshold_init files searched recursively";
-        }
+        my $file_name = _find_go_files($text);
+        $parsed{file_name} = $file_name if $file_name;
     }
 
     if ( !exists $parsed{file_name} ) {
@@ -354,6 +344,25 @@ sub _which {
     }
 
     return;
+}
+
+sub _find_go_files {
+    my $text           = shift;
+    my $threshold_init = shift || 5000;
+
+    my $file_name;
+    my $iter      = path('.')->iterator( { recurse => 1 } );
+    my $threshold = $threshold_init;
+    while ( my $path = $iter->() ) {
+        next unless $path->is_file;    # dirs will never match anything
+        ( $threshold, $file_name ) = ( 0, "$path" )
+            if $path->basename eq $text;
+        last if --$threshold == 0;
+    }
+    if ( $threshold == 0 && !$file_name ) {
+        warn "Only $threshold_init files searched recursively";
+    }
+    return $file_name;
 }
 
 # ABSTRACT: Try to Do the Right Thing when opening files

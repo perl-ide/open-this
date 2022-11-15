@@ -3,9 +3,9 @@ use warnings;
 
 use Open::This qw( parse_text to_editor_args );
 use Path::Tiny qw( path );
-use Test::More import => [qw( done_testing is ok )];
+use Test::More import => [qw( done_testing is like ok )];
 use Test::Differences qw( eq_or_diff );
-use Test::Warnings    ();
+use Test::Warnings    qw( warnings );
 
 # This gets really noisy on Travis if $ENV{EDITOR} is not set
 local $ENV{EDITOR} = 'vim';
@@ -328,6 +328,16 @@ eq_or_diff(
         parse_text($text),
         undef,
         'cannot find go file'
+    );
+}
+
+{
+    my $text     = 'notest.go:4';
+    my @warnings = ( warnings { Open::This::_find_go_files( $text, 3 ) } );
+    is( @warnings, 1, 'one warnings' );
+    like(
+        $warnings[0], qr{Only 3 files searched recursively at .*},
+        'warns on max recursion'
     );
 }
 
