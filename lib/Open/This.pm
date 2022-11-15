@@ -55,8 +55,8 @@ sub parse_text {
     }
     elsif ( $text =~ m{^[^/]+\.go$} ) {
         my $threshold_init = 5000;
-        my $iter = path('.')->iterator({ recurse => 1 });
-        my $threshold = $threshold_init;
+        my $iter           = path('.')->iterator( { recurse => 1 } );
+        my $threshold      = $threshold_init;
         while ( $threshold-- > 0 ) {
             my $path = $iter->();
             ( $threshold, $parsed{file_name} ) = ( 0, "$path" )
