@@ -53,6 +53,18 @@ sub parse_text {
     elsif ( my $file_name = _maybe_git_diff_path($text) ) {
         $parsed{file_name} = $file_name;
     }
+    elsif ( $text =~ m{^[^/]+\.go$} ) {
+        my $threshold_init = 5000;
+        my $iter = path('.')->iterator({ recurse => 1 });
+        my $threshold = $threshold_init;
+        while ( $threshold-- > 0 ) {
+            my $path = $iter->();
+            ( $threshold, $parsed{file_name} ) = ( 0, "$path" )
+                if $path->basename eq $text;
+        }
+        warn "Only $threshold_init files searched recursively"
+            unless exists $parsed{file_name};
+    }
 
     if ( !exists $parsed{file_name} ) {
         if ( my $bin = _which($text) ) {
