@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000032  2023-05-05 02:22:25Z
     - Make boolean check pass for Perl 5.37 (GH#49) (Olaf Alders)
 
