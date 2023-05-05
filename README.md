@@ -10,7 +10,7 @@ Open::This - Try to Do the Right Thing when opening files
 
 # VERSION
 
-version 0.000031
+version 0.000032
 
 # DESCRIPTION
 
