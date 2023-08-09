@@ -144,14 +144,26 @@ sub editor_args_from_parsed_text {
     my @args;
 
     # kate --line 11 --column 2 filename
-    if ( $ENV{EDITOR} eq 'kate' ) {
+    # idea.sh --line 11 --column 2 filename
+    if ( $ENV{EDITOR} eq 'kate' || $ENV{EDITOR} =~ /^idea/i ) {
         push @args, '--line', $parsed->{line_number}
             if $parsed->{line_number};
 
         push @args, '--column', $parsed->{column_number}
             if $parsed->{column_number};
     }
-
+    # code filename:11:2
+    # codium filename:11:2
+    elsif ( $ENV{EDITOR} =~ /^cod(e|ium)/i ) {
+	my $result = $parsed->{file_name};
+	if($parsed->{line_number}) {
+		$result .= ":".$parsed->{line_number};
+		if($parsed->{column_number}) {
+			$result .= ":".$parsed->{column_number};
+		}
+	}
+    	return ( $result );
+    } 
     # See https://vi.stackexchange.com/questions/18499/can-i-open-a-file-at-an-arbitrary-line-and-column-via-the-command-line
     # nvim +'call cursor(11,2)' filename
     # vi   +'call cursor(11,2)' filename
