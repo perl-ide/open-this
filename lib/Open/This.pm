@@ -1,21 +1,22 @@
 use strict;
 use warnings;
+
 package Open::This;
 
 our $VERSION = '0.000033';
 
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(
-    maybe_get_url_from_parsed_text
-    editor_args_from_parsed_text
-    parse_text
-    to_editor_args
+  maybe_get_url_from_parsed_text
+  editor_args_from_parsed_text
+  parse_text
+  to_editor_args
 );
 
 use Module::Runtime qw(
-    is_module_name
-    module_notional_filename
-    require_module
+  is_module_name
+  module_notional_filename
+  require_module
 );
 use Module::Util ();
 use Path::Tiny   qw( path );
@@ -85,14 +86,13 @@ sub parse_text {
     }
 
     if ( !$parsed{line_number} ) {
-        $parsed{line_number} = _maybe_extract_line_number_via_sub_name(
-            $parsed{file_name},
-            $parsed{sub_name}
-        );
+        $parsed{line_number} =
+          _maybe_extract_line_number_via_sub_name( $parsed{file_name},
+            $parsed{sub_name} );
     }
 
     my %return = map { $_ => $parsed{$_} }
-        grep { defined $parsed{$_} && $parsed{$_} ne q{} } keys %parsed;
+      grep { defined $parsed{$_} && $parsed{$_} ne q{} } keys %parsed;
 
     return $return{file_name} ? \%return : undef;
 }
@@ -120,10 +120,9 @@ sub maybe_get_url_from_parsed_text {
 
     my $clone = $url->clone;
     my @parts = $clone->path_segments;
-    push(
-        @parts, 'blob', Git::Helpers::current_branch_name(),
-        $parsed->{file_name}
-    );
+    push( @parts,
+        'blob', Git::Helpers::current_branch_name(),
+        $parsed->{file_name} );
     $clone->path( join '/', @parts );
     if ( $parsed->{line_number} ) {
         $clone->fragment( 'L' . $parsed->{line_number} );
@@ -147,31 +146,34 @@ sub editor_args_from_parsed_text {
     # idea.sh --line 11 --column 2 filename
     if ( $ENV{EDITOR} eq 'kate' || $ENV{EDITOR} =~ /^idea/i ) {
         push @args, '--line', $parsed->{line_number}
-            if $parsed->{line_number};
+          if $parsed->{line_number};
 
         push @args, '--column', $parsed->{column_number}
-            if $parsed->{column_number};
+          if $parsed->{column_number};
     }
+
     # code filename:11:2
     # codium filename:11:2
     elsif ( $ENV{EDITOR} =~ /^cod(e|ium)/i ) {
-	my $result = $parsed->{file_name};
-	if($parsed->{line_number}) {
-		$result .= ":".$parsed->{line_number};
-		if($parsed->{column_number}) {
-			$result .= ":".$parsed->{column_number};
-		}
-	}
-    	return ( $result );
-    } 
-    # See https://vi.stackexchange.com/questions/18499/can-i-open-a-file-at-an-arbitrary-line-and-column-via-the-command-line
-    # nvim +'call cursor(11,2)' filename
-    # vi   +'call cursor(11,2)' filename
-    # vim  +'call cursor(11,2)' filename
+        my $result = $parsed->{file_name};
+        if ( $parsed->{line_number} ) {
+            $result .= ":" . $parsed->{line_number};
+            if ( $parsed->{column_number} ) {
+                $result .= ":" . $parsed->{column_number};
+            }
+        }
+        return ($result);
+    }
+
+# See https://vi.stackexchange.com/questions/18499/can-i-open-a-file-at-an-arbitrary-line-and-column-via-the-command-line
+# nvim +'call cursor(11,2)' filename
+# vi   +'call cursor(11,2)' filename
+# vim  +'call cursor(11,2)' filename
     elsif ( exists $parsed->{column_number} ) {
         if (   $ENV{EDITOR} eq 'nvim'
             || $ENV{EDITOR} eq 'vi'
-            || $ENV{EDITOR} eq 'vim' ) {
+            || $ENV{EDITOR} eq 'vim' )
+        {
             @args = sprintf(
                 '+call cursor(%i,%i)',
                 $parsed->{line_number},
@@ -181,8 +183,7 @@ sub editor_args_from_parsed_text {
 
         # nano +11,2 filename
         if ( $ENV{EDITOR} eq 'nano' ) {
-            @args = sprintf(
-                '+%i,%i',
+            @args = sprintf( '+%i,%i',
                 $parsed->{line_number},
                 $parsed->{column_number},
             );
@@ -311,10 +312,10 @@ sub _maybe_extract_file_from_url {
 sub _maybe_find_local_file {
     my $text          = shift;
     my $possible_name = module_notional_filename($text);
-    my @dirs
-        = exists $ENV{OPEN_THIS_LIBS}
-        ? split m{,}, $ENV{OPEN_THIS_LIBS}
-        : ( 'lib', 't/lib' );
+    my @dirs =
+      exists $ENV{OPEN_THIS_LIBS}
+      ? split m{,}, $ENV{OPEN_THIS_LIBS}
+      : ( 'lib', 't/lib' );
 
     for my $dir (@dirs) {
         my $path = path( $dir, $possible_name );
@@ -368,7 +369,7 @@ sub _find_go_files {
     while ( my $path = $iter->() ) {
         next unless $path->is_file;    # dirs will never match anything
         ( $threshold, $file_name ) = ( 0, "$path" )
-            if $path->basename eq $text;
+          if $path->basename eq $text;
         last if --$threshold == 0;
     }
     if ( $threshold == 0 && !$file_name ) {

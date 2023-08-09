@@ -8,7 +8,7 @@ use Test::Differences qw( eq_or_diff );
 use Test::More import => [qw( done_testing )];
 use Test::Warnings ();
 
-my @editors = ('idea', 'idea.sh', 'idea64', 'idea64.exe');
+my @editors = ( 'idea', 'idea.sh', 'idea64', 'idea64.exe' );
 
 for my $editor (@editors) {
 
