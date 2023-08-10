@@ -165,7 +165,7 @@ sub editor_args_from_parsed_text {
                 $result .= ":" . $parsed->{column_number};
             }
         }
-        return ($result);
+        return ( '--goto', $result );
     }
 
     # See https://vi.stackexchange.com/questions/18499/can-i-open-a-file-at-an-arbitrary-line-and-column-via-the-command-line

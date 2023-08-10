@@ -16,19 +16,19 @@ for my $editor (@editors) {
 
     eq_or_diff(
         [ to_editor_args('t/git.t') ],
-        [ 't/git.t', ],
+        [ '--goto', 't/git.t', ],
         $editor . ' filename'
     );
 
     eq_or_diff(
         [ to_editor_args('t/git.t:10') ],
-        [ 't/git.t:10', ],
+        [ '--goto', 't/git.t:10', ],
         $editor . ' line'
     );
 
     eq_or_diff(
         [ to_editor_args('t/git.t:10:22') ],
-        [ 't/git.t:10:22', ],
+        [ '--goto', 't/git.t:10:22', ],
         $editor . ' line and column'
     );
 
