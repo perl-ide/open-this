@@ -16,8 +16,10 @@ for my $editor (@editors) {
 
     eq_or_diff( [ to_editor_args('t/git.t') ], [ 't/git.t', ], 'filename' );
 
-    eq_or_diff( [ to_editor_args('t/git.t:10') ],
-        [ '--line', '10', 't/git.t', ], 'line' );
+    eq_or_diff(
+        [ to_editor_args('t/git.t:10') ],
+        [ '--line', '10', 't/git.t', ], 'line'
+    );
 
     eq_or_diff(
         [ to_editor_args('t/git.t:10:22') ],

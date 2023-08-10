@@ -5,9 +5,9 @@ use warnings;
 
 use Getopt::Long qw( GetOptions );
 use Open::This   qw(
-  editor_args_from_parsed_text
-  maybe_get_url_from_parsed_text
-  parse_text
+    editor_args_from_parsed_text
+    maybe_get_url_from_parsed_text
+    parse_text
 );
 use Path::Tiny qw( path );
 use Pod::Usage qw( pod2usage );
@@ -56,8 +56,8 @@ if ($print) {
 }
 
 $ENV{EDITOR}
-  ? exec $ENV{EDITOR}, @editor_args
-  : die('Please set your $EDITOR env var or use the --editor arg');
+    ? exec $ENV{EDITOR}, @editor_args
+    : die('Please set your $EDITOR env var or use the --editor arg');
 
 # ABSTRACT: parse text and (hopefully) open an editor with the correct arguments
 # PODNAME: ot
