@@ -155,8 +155,8 @@ sub editor_args_from_parsed_text {
             if $parsed->{column_number};
     }
 
-    # code filename:11:2
-    # codium filename:11:2
+    # code --goto filename:11:2
+    # codium --goto filename:11:2
     elsif ( $ENV{EDITOR} =~ /^cod(e|ium)/i ) {
         my $result = $parsed->{file_name};
         if ( $parsed->{line_number} ) {
