@@ -147,7 +147,10 @@ sub editor_args_from_parsed_text {
 
     # kate --line 11 --column 2 filename
     # idea.sh --line 11 --column 2 filename
-    if ( $ENV{EDITOR} eq 'kate' || $ENV{EDITOR} =~ /^idea/i ) {
+    if (   $ENV{EDITOR} eq 'kate'
+        || $ENV{EDITOR}
+        =~ /^(idea|rubymine|pycharm|phpstorm|webstorm|goland|rider|clion|fleet|aqua|data(grip|spell)|appcode)/i
+    ) {
         push @args, '--line', $parsed->{line_number}
             if $parsed->{line_number};
 
