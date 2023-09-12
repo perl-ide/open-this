@@ -137,7 +137,7 @@ disks.  All security caveats apply when requiring 3rd party modules.
     ot -e kate Foo::Bar
 
     # Don't open anything. Just print to STDOUT. [-p|--print]
-    ot -p kate Foo::Bar
+    ot -p -e kate Foo::Bar
 
 =head1 PARAMETERS
 
@@ -186,7 +186,7 @@ other appropriate place in your dot files.
 =head1 SUPPORTED EDITORS
 
 This code has been well tested with C<vim>.  It should also work with C<nvim>,
-C<emacs>, C<pico>, C<nano> and C<kate>.  Patches for other editors are very
+C<emacs>, C<pico>, C<nano>, IntelliJ IDEA, Visual Studio Code, VSCodium and C<kate>.  Patches for other editors are very
 welcome.
 
 =cut
