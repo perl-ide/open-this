@@ -1,7 +1,7 @@
-[![Actions Status](https://github.com/oalders/open-this/actions/workflows/test/badge.svg)](https://github.com/oalders/open-this/actions)
-[![codecov](https://codecov.io/gh/oalders/open-this/branch/master/graph/badge.svg)](https://codecov.io/gh/oalders/open-this)
+[![Actions Status](https://github.com/perl-ide/open-this/actions/workflows/test/badge.svg)](https://github.com/perl-ide/open-this/actions)
+[![codecov](https://codecov.io/gh/perl-ide/open-this/branch/master/graph/badge.svg)](https://codecov.io/gh/perl-ide/open-this)
 [![Kwalitee status](https://cpants.cpanauthors.org/dist/Open-This.png)](https://cpants.cpanauthors.org/dist/Open-This)
-[![GitHub tag](https://img.shields.io/github/tag/oalders/open-this.svg)]()
+[![GitHub tag](https://img.shields.io/github/tag/perl-ide/open-this.svg)]()
 [![Cpan license](https://img.shields.io/cpan/l/Open-This.svg)](https://metacpan.org/release/Open-This)
 
 # NAME
@@ -10,7 +10,7 @@ Open::This - Try to Do the Right Thing when opening files
 
 # VERSION
 
-version 0.000032
+version 0.000033
 
 # DESCRIPTION
 
