@@ -16,25 +16,25 @@ pod2usage("Error: missing argument\n") unless @ARGV;
 
 my $browse;
 my $editor;
+my $json;
 my $print;
 
 GetOptions(
     'browse|b'   => \$browse,
     'editor|e=s' => \$editor,
+    'json|j'     => \$json,
     'print|p'    => \$print,
 );
 
 my $parsed = parse_text(@ARGV);
 if ( !$parsed ) {
-    print "Could not locate file\n";
-    exit(1);
+    exit_with_error('Could not locate file');
 }
 
 if ($browse) {
     my $url = maybe_get_url_from_parsed_text($parsed);
     if ( !exists $parsed->{remote_file_url} ) {
-        print "Could not find remote repository\n";
-        exit(1);
+        exit_with_error('Could not find remote repository');
     }
 
     # A relative path should be inside our repository
@@ -48,16 +48,48 @@ if ($browse) {
 
 local $ENV{EDITOR} = $editor || $ENV{EDITOR};
 
+unless ( $ENV{EDITOR} ) {
+    exit_with_error(
+        'Please set your $EDITOR env var or use the --editor arg');
+}
+
 my @editor_args = editor_args_from_parsed_text($parsed);
 
+if ($json) {
+    require Cpanel::JSON::XS;    ## no perlimports
+    my $json = Cpanel::JSON::XS->new->canonical->encode(
+        {
+            editor      => $ENV{EDITOR},
+            editor_args => \@editor_args,
+            success     => Cpanel::JSON::XS::true(),
+        }
+    );
+    print STDOUT $json, "\n";
+    exit(0);
+}
 if ($print) {
     print STDOUT join( ' ', @editor_args ), "\n";
     exit(0);
 }
 
-$ENV{EDITOR}
-    ? exec $ENV{EDITOR}, @editor_args
-    : die('Please set your $EDITOR env var or use the --editor arg');
+sub exit_with_error {
+    my $error = shift;
+    unless ($json) {
+        print STDERR $error, "\n";
+        exit(1);
+    }
+    require Cpanel::JSON::XS;    ## no perlimports
+    my $json = Cpanel::JSON::XS->new->canonical->encode(
+        {
+            error   => $error,
+            success => Cpanel::JSON::XS::false(),
+        }
+    );
+    print STDOUT $json, "\n";
+    exit(1);
+}
+
+exec $ENV{EDITOR}, @editor_args;
 
 # ABSTRACT: parse text and (hopefully) open an editor with the correct arguments
 # PODNAME: ot
@@ -138,6 +170,9 @@ disk.  All security caveats apply when requiring 3rd party modules.
     # Don't open anything. Just print to STDOUT. [-p|--print]
     ot -p -e kate Foo::Bar
 
+    # Don't open anything. Just print JSON to STDOUT. [-j|--json]
+    ot -j -e kate Foo::Bar
+
 =head1 PARAMETERS
 
 =head2 -b|--browse
@@ -155,6 +190,11 @@ plugins.
     ot -e kate Foo::Bar
 
     ot --editor kate Foo::Bar
+
+=head2 -j|--json
+
+(Experimental). Print editor arguments to C<STDOUT> as well as an indication of success or
+failure. This can be used for editor integration.
 
 =head2 -p|--print
 

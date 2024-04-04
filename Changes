@@ -1,6 +1,7 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - Add --json flag (GH#52) (Olaf Alders)
 
 0.000033  2023-09-12 14:46:08Z
     - Add support for IntellJ IDEA, VSCode, VSCodium and more. Also fix typo
