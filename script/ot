@@ -68,16 +68,15 @@ $ENV{EDITOR}
 
 It can be a pain to have to copy Perl module names from a stack trace or some
 other output and have to translate that into something which an editor like vim
-understands.  This module aims to take some of the pain out of this.  So far I
-have tested this only with vim, but I *think* this should also work with emacs
-and nano.
+understands.  This module aims to take some of the pain out of this and it
+supports many different editors. See C<SUPPORTED EDITORS> below for a list.
 
 The C<ot> script can parse line numbers from text so that you can open your
 files at the correct starting point.  It will also try to translate subroutine
 names into the appropriate line numbers.  It will look in a lib or t/lib
 directory relative to your current path.  If it thinks it has a Perl module
 name it will also try to require it and use %INC in order to find the module on
-disks.  All security caveats apply when requiring 3rd party modules.
+disk.  All security caveats apply when requiring 3rd party modules.
 
 =head1 SYNOPSIS
 
@@ -172,7 +171,9 @@ for writing editor-specific plugins.
 
 =head1 ENVIRONMENT VARIABLES
 
-By default, C<ot> will search your C<lib> and C<t/lib> directories for local files.  You can override this via the C<$ENV{OPEN_THIS_LIBS}> variable.  It accepts a comma-separated list of libs.
+By default, C<ot> will search your C<lib> and C<t/lib> directories for local
+files.  You can override this via the C<$ENV{OPEN_THIS_LIBS}> variable.  It
+accepts a comma-separated list of libs.
 
     export OPEN_THIS_LIBS=lib,t/lib,t/other-lib
 
@@ -185,8 +186,8 @@ other appropriate place in your dot files.
 
 =head1 SUPPORTED EDITORS
 
-This code has been well tested with C<vim>.  It should also work with C<nvim>,
-C<emacs>, C<pico>, C<nano>, IntelliJ IDEA, Visual Studio Code, VSCodium and C<kate>.  Patches for other editors are very
-welcome.
+This code has been tested with C<vim>, C<nvim>, C<emacs>, C<pico>, C<nano>,
+IntelliJ IDEA, Visual Studio Code, VSCodium and C<kate>.  Patches for other
+editors are very welcome.
 
 =cut
