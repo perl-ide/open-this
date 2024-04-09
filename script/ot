@@ -28,13 +28,13 @@ GetOptions(
 
 my $parsed = parse_text(@ARGV);
 if ( !$parsed ) {
-    exit_with_error('Could not locate file');
+    exit_with_error( 'Could not locate file', join ' ', @ARGV );
 }
 
 if ($browse) {
     my $url = maybe_get_url_from_parsed_text($parsed);
     if ( !exists $parsed->{remote_file_url} ) {
-        exit_with_error('Could not find remote repository');
+        exit_with_error( 'Could not find remote repository', $parsed );
     }
 
     # A relative path should be inside our repository
@@ -73,7 +73,8 @@ if ($print) {
 }
 
 sub exit_with_error {
-    my $error = shift;
+    my $error   = shift;
+    my $details = shift;
     unless ($json) {
         print STDERR $error, "\n";
         exit(1);
@@ -81,6 +82,7 @@ sub exit_with_error {
     require Cpanel::JSON::XS;    ## no perlimports
     my $json = Cpanel::JSON::XS->new->canonical->encode(
         {
+            ( $details ? ( details => $details ) : () ),
             error   => $error,
             success => Cpanel::JSON::XS::false(),
         }

@@ -38,4 +38,17 @@ subtest 'json' => sub {
     }
 };
 
+subtest 'json with details' => sub {
+    my @args = (
+        '--json', '--editor', 'kate', 'this-does-not-exist.txt',
+    );
+
+    script_fails( [ './script/ot', @args ], { exit => 1 }, 'get details' );
+    script_stdout_is(
+        '{"details":"this-does-not-exist.txt","error":"Could not locate file","success":false}'
+            . "\n",
+        'details in JSON'
+    );
+};
+
 done_testing;
