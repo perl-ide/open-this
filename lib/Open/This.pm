@@ -143,6 +143,8 @@ sub editor_args_from_parsed_text {
     my $parsed = shift;
     return unless $parsed;
 
+    die '$EDITOR has not been set' unless $ENV{EDITOR};
+
     my @args;
 
     # kate --line 11 --column 2 filename
