@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/perl-ide/open-this/actions/workflows/test/badge.svg)](https://github.com/perl-ide/open-this/actions)
+[![Actions Status](https://github.com/perl-ide/open-this/actions/workflows/test.yml/badge.svg)](https://github.com/perl-ide/open-this/actions)
 [![codecov](https://codecov.io/gh/perl-ide/open-this/branch/master/graph/badge.svg)](https://codecov.io/gh/perl-ide/open-this)
 [![Kwalitee status](https://cpants.cpanauthors.org/dist/Open-This.png)](https://cpants.cpanauthors.org/dist/Open-This)
 [![GitHub tag](https://img.shields.io/github/tag/perl-ide/open-this.svg)]()
@@ -10,7 +10,7 @@ Open::This - Try to Do the Right Thing when opening files
 
 # VERSION
 
-version 0.000033
+version 0.000034
 
 # DESCRIPTION
 
