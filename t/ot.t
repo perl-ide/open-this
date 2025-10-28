@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Test::More import => [qw( done_testing subtest )];
-use Test::Script qw( script_runs script_stdout_is );
+use Test::Script qw( script_runs script_stdout_is script_fails );
 
 subtest 'print' => sub {
     my @args = (
