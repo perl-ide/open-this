@@ -70,6 +70,10 @@ jobs:
           - os: windows-latest
             perl-version: '5.12'
           - os: windows-latest
+            perl-version: '5.14'
+          - os: windows-latest
+            perl-version: '5.16'
+          - os: windows-latest
             perl-version: '5.32'
           - os: windows-latest
             perl-version: '5.34'
