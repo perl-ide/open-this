@@ -90,6 +90,11 @@ my @forge_urls = (
         ['t/test-data/file with spaces'],
         'percent-encoded path is decoded'
     ],
+    [
+        'https://github.com/o',
+        [],
+        'URL too short to name a file'
+    ],
 );
 
 for my $case (@forge_urls) {
