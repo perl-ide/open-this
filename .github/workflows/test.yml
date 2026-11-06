@@ -96,10 +96,11 @@ jobs:
         with:
           name: build_dir
           path: .
-      - name: install deps using cpm
-        uses: perl-actions/install-with-cpm@v2
+      - uses: perl-actions/setup-cpm@v1
         with:
-          cpanfile: 'cpanfile'
+          version: compat
+      - name: install deps using cpm
+        run: cpm install -g --cpanfile cpanfile
       - run: prove -lr t
         env:
           AUTHOR_TESTING: 0
