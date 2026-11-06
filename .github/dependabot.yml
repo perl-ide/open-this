@@ -6,3 +6,18 @@ updates:
     schedule:
       # Check for updates to GitHub Actions every week
       interval: 'weekly'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: 'ci'
+    labels:
+      - 'dependencies'
+      - 'github_actions'
