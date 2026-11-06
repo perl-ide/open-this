@@ -414,8 +414,6 @@ sub _find_go_files {
 
 =pod
 
-=for stopwords Bitbucket Codeberg GitLab SourceHut
-
 =head1 DESCRIPTION
 
 This module powers the L<ot> command line script, which tries to do the right
