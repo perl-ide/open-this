@@ -95,6 +95,18 @@ my @forge_urls = (
         [],
         'URL too short to name a file'
     ],
+    [
+        'https://github.com/o/r/blob/main/lib/Open/This.pm/',
+        ['lib/Open/This.pm'],
+        'trailing slash is ignored'
+    ],
+    map { [ $_, [], "no file in $_" ] } qw(
+        https://github.com/o/r/blob/main
+        https://gitlab.com/g/r/-
+        https://gitlab.com/g/r/-/blob
+        https://codeberg.org/o/r/src
+        https://git.sr.ht/~u/r/tree
+    ),
 );
 
 for my $case (@forge_urls) {

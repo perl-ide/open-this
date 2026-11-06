@@ -338,8 +338,12 @@ sub _maybe_extract_file_from_url {
         $start = $p[3] =~ m{\A(?:branch|tag|commit)\z} ? 5 : 4;
     }
 
-    if ( defined $start && $start <= $#parts ) {
-        my $file = path( @parts[ $start .. $#parts ] );
+    # Drop empty segments from "//" or a trailing slash; path() dies on them
+    my @file
+        = defined $start ? grep { length } @parts[ $start .. $#parts ] : ();
+
+    if (@file) {
+        my $file = path(@file);
 
         return unless $file->is_file;
 
