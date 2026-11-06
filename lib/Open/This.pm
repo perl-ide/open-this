@@ -22,8 +22,18 @@ use Module::Util ();
 use Path::Tiny   qw( path );
 use Try::Tiny    qw( catch try );
 use URI          ();
+use URI::Escape  qw( uri_unescape );
 
 ## no critic (Subroutines::ProhibitExplicitReturnUndef)
+
+# host => [ segments before branch, segments after branch, line anchor prefix ]
+my %FORGE_URL_PARTS = (
+    'bitbucket.org' => [ ['src'],             [],       'lines-' ],
+    'codeberg.org'  => [ [ 'src', 'branch' ], [],       'L' ],
+    'git.sr.ht'     => [ ['tree'],            ['item'], 'L' ],
+    'gitlab.com'    => [ [ '-', 'blob' ],     [],       'L' ],
+);
+my $DEFAULT_URL_PARTS = [ ['blob'], [], 'L' ];
 
 sub parse_text {
     my $text = join q{ }, @_;
@@ -130,17 +140,19 @@ REMOTE:
     return undef unless $url && $url->can('host');
     $parsed->{remote_url} = $url;
 
+    my ( $before, $after, $anchor )
+        = @{ $FORGE_URL_PARTS{ $url->host } || $DEFAULT_URL_PARTS };
+
     my $clone = $url->clone;
     my @parts = $clone->path_segments;
     push(
         @parts,
-        ( $url->host eq 'codeberg.org' ? ( 'src', 'branch' ) : 'blob' ),
-        Git::Helpers::current_branch_name(),
+        @$before, Git::Helpers::current_branch_name(), @$after,
         $parsed->{file_name}
     );
     $clone->path( join '/', @parts );
     if ( $parsed->{line_number} ) {
-        $clone->fragment( 'L' . $parsed->{line_number} );
+        $clone->fragment( $anchor . $parsed->{line_number} );
     }
 
     $parsed->{remote_file_url} = $clone;
@@ -244,6 +256,11 @@ sub _maybe_extract_line_number {
         return $2, $3;
     }
 
+    # Bitbucket links: foo/bar.go#lines-100(:110); before rg/git-grep eat ":110"
+    if ( $$text =~ s{(\w)#lines-(\d+)\b.*}{$1} ) {
+        return $2;
+    }
+
     # ripgrep (rg --vimgrep)
     # ./lib/Open/This.pm:17:3
     if ( $$text =~ s{(\w):(\d+):(\d+).*}{$1} ) {
@@ -312,9 +329,15 @@ sub _maybe_extract_file_from_url {
     require_module('URI');
     my $uri = URI->new($$text);
 
-    # GitHub(ish) blob or Codeberg src/branch URL?
-    if ( $uri->path =~ m{\A/[^/]+/[^/]+/(?:blob|src/branch)/[^/]+/(.+)} ) {
-        my $file = path($1);
+    # GitLab "/-/blob/" (any subgroup depth), GitHub, Codeberg, Bitbucket, sr.ht
+    if (
+        $uri->path =~ m{(?|
+            /-/blob/[^/]+/(.+)
+            | \A/[^/]+/[^/]+/(?:blob|src/(?:branch|tag|commit)|src)/[^/]+/(.+)
+            | \A/[^/]+/[^/]+/tree/[^/]+/item/(.+)
+        )}x
+    ) {
+        my $file = path( uri_unescape($1) );
 
         return unless $file->is_file;
 
@@ -433,10 +456,16 @@ Copy/pasting a full GitHub URL.
     ot https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L17-L21
     # vim +17 lib/Open/This.pm
 
+GitLab, Codeberg, Bitbucket and SourceHut file URLs are also understood.
+
 Open a local file on the GitHub web site in your web browser.  From within a
 checked out copy of https://github.com/oalders/open-this
 
     ot -b Foo::Bar
+
+URLs are built in the style of GitHub, GitLab, Codeberg, Bitbucket or
+SourceHut, depending on the host of your remote.  Other hosts get GitHub-style
+URLs.
 
 Open a local file at the correct line on the GitHub web site in your web
 browser.  From within a checked out copy of
@@ -497,8 +526,9 @@ Tries to return an URL to a Git repository for a checked out file. The URL
 will be built using the first remote listed in C<$ENV{OPEN_THIS_REMOTES}>
 (comma-separated) that exists, falling back to C<origin>, and the name of the
 current branch. A line number will be attached if it can be parsed from the
-text. This has only currently been tested with GitHub and Codeberg URLs and it assumes you're
-working on a branch which has already been pushed to your remote.
+text. GitHub, GitLab, Codeberg, Bitbucket and SourceHut URL layouts are
+supported; other hosts get GitHub-style URLs. It assumes you're working on a
+branch which has already been pushed to your remote.
 
     my $url = maybe_get_url_from_parsed_text( parse_text('t/lib/Foo/Bar.pm:32'));
     # $url might be something like: https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L32
