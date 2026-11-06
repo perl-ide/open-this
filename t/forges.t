@@ -8,32 +8,33 @@ use Test::Warnings ();
 use URI            ();
 
 no warnings 'redefine';
-local *Git::Helpers::current_branch_name = sub { 'main' };
+local *Git::Helpers::current_branch_name = sub { 'topic' };
 
 my $file  = 'lib/Open/This.pm';
 my @cases = (
     [
-        'https://github.com/o/r', "https://github.com/o/r/blob/main/$file#L32"
+        'https://github.com/o/r',
+        "https://github.com/o/r/blob/topic/$file#L32"
     ],
     [
         'https://gitlab.com/g/sub/r',
-        "https://gitlab.com/g/sub/r/-/blob/main/$file#L32"
+        "https://gitlab.com/g/sub/r/-/blob/topic/$file#L32"
     ],
     [
         'https://codeberg.org/o/r',
-        "https://codeberg.org/o/r/src/branch/main/$file#L32"
+        "https://codeberg.org/o/r/src/branch/topic/$file#L32"
     ],
     [
         'https://bitbucket.org/o/r',
-        "https://bitbucket.org/o/r/src/main/$file#lines-32"
+        "https://bitbucket.org/o/r/src/topic/$file#lines-32"
     ],
     [
         'https://git.sr.ht/~o/r',
-        "https://git.sr.ht/~o/r/tree/main/item/$file#L32"
+        "https://git.sr.ht/~o/r/tree/topic/item/$file#L32"
     ],
     [
         'https://git.example.com/o/r',
-        "https://git.example.com/o/r/blob/main/$file#L32"
+        "https://git.example.com/o/r/blob/topic/$file#L32"
     ],
 );
 
