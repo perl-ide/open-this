@@ -134,7 +134,8 @@ REMOTE:
     my @parts = $clone->path_segments;
     push(
         @parts,
-        'blob', Git::Helpers::current_branch_name(),
+        ( $url->host eq 'codeberg.org' ? ( 'src', 'branch' ) : 'blob' ),
+        Git::Helpers::current_branch_name(),
         $parsed->{file_name}
     );
     $clone->path( join '/', @parts );
@@ -311,11 +312,9 @@ sub _maybe_extract_file_from_url {
     require_module('URI');
     my $uri = URI->new($$text);
 
-    my @parts = $uri->path_segments;
-
-    # Is this a GitHub(ish) URL?
-    if ( $parts[3] eq 'blob' ) {
-        my $file = path( @parts[ 5 .. scalar @parts - 1 ] );
+    # GitHub(ish) blob or Codeberg src/branch URL?
+    if ( $uri->path =~ m{\A/[^/]+/[^/]+/(?:blob|src/branch)/[^/]+/(.+)} ) {
+        my $file = path($1);
 
         return unless $file->is_file;
 
@@ -498,7 +497,7 @@ Tries to return an URL to a Git repository for a checked out file. The URL
 will be built using the first remote listed in C<$ENV{OPEN_THIS_REMOTES}>
 (comma-separated) that exists, falling back to C<origin>, and the name of the
 current branch. A line number will be attached if it can be parsed from the
-text. This has only currently be tested with GitHub URLs and it assumes you're
+text. This has only currently been tested with GitHub and Codeberg URLs and it assumes you're
 working on a branch which has already been pushed to your remote.
 
     my $url = maybe_get_url_from_parsed_text( parse_text('t/lib/Foo/Bar.pm:32'));
