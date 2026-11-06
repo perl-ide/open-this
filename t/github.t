@@ -49,6 +49,75 @@ eq_or_diff(
     'full https GitHub URL with invalid fragment'
 );
 
+my @forge_urls = (
+    [
+        'https://codeberg.org/o/open-this/src/branch/main/lib/Open/This.pm#L75',
+        [ '+75', 'lib/Open/This.pm' ],
+        'Codeberg src/branch URL'
+    ],
+    [
+        'https://codeberg.org/o/open-this/src/commit/8ce746e/lib/Open/This.pm#L75',
+        [ '+75', 'lib/Open/This.pm' ],
+        'Codeberg src/commit URL'
+    ],
+    [
+        'https://codeberg.org/o/open-this/src/tag/v1.0/lib/Open/This.pm#L75',
+        [ '+75', 'lib/Open/This.pm' ],
+        'Codeberg src/tag URL'
+    ],
+    [
+        'https://gitlab.com/group/sub/repo/-/blob/main/lib/Open/This.pm#L75',
+        [ '+75', 'lib/Open/This.pm' ],
+        'GitLab -/blob URL with subgroup'
+    ],
+    [
+        'https://bitbucket.org/o/open-this/src/main/lib/Open/This.pm#lines-75',
+        [ '+75', 'lib/Open/This.pm' ],
+        'Bitbucket src URL'
+    ],
+    [
+        'https://bitbucket.org/o/open-this/src/main/lib/Open/This.pm#lines-10:20',
+        [ '+10', 'lib/Open/This.pm' ],
+        'Bitbucket src URL with line range'
+    ],
+    [
+        'https://git.sr.ht/~user/repo/tree/main/item/lib/Open/This.pm#L75',
+        [ '+75', 'lib/Open/This.pm' ],
+        'SourceHut tree/item URL'
+    ],
+    [
+        'https://github.com/o/open-this/blob/main/t/test-data/file%20with%20spaces',
+        ['t/test-data/file with spaces'],
+        'percent-encoded path is decoded'
+    ],
+    [
+        'https://github.com/o',
+        [],
+        'URL too short to name a file'
+    ],
+    [
+        'https://github.com/o/r/blob/main/lib/Open/This.pm/',
+        ['lib/Open/This.pm'],
+        'trailing slash is ignored'
+    ],
+    [
+        'https://github.com/o/r/blob/main//lib/Open/This.pm',
+        ['lib/Open/This.pm'],
+        'empty segment from // is ignored'
+    ],
+    map { [ $_, [], "no file in $_" ] } qw(
+        https://github.com/o/r/blob/main
+        https://gitlab.com/g/r/-
+        https://codeberg.org/o/r/src
+        https://git.sr.ht/~u/r/tree
+    ),
+);
+
+for my $case (@forge_urls) {
+    my ( $url, $expected, $name ) = @$case;
+    eq_or_diff( [ to_editor_args($url) ], $expected, $name );
+}
+
 eq_or_diff(
     [ to_editor_args('HTTP::FakeTestClass') ],
     ['t/lib/HTTP/FakeTestClass.pm'],
