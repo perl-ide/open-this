@@ -147,7 +147,7 @@ disk.  All security caveats apply when requiring 3rd party modules.
     # Open a binary which is in your $ENV{PATH} at an arbitrary column and line
     ot cpanm:10:3
 
-    # open Foo::Bar on the GitHub web site in your browser
+    # open Foo::Bar on the GitHub or Codeberg web site in your browser
     ot -b Foo::Bar
 
     # open a file locally, using a GitHub link.  You must be at the top level
@@ -179,8 +179,8 @@ disk.  All security caveats apply when requiring 3rd party modules.
 
 =head2 -b|--browse
 
-Open the file on the GitHub web site using your default browser, rather than
-invoking a local editor.
+Open the file on the GitHub or Codeberg web site using your default browser,
+rather than invoking a local editor.
 
     ot -b Foo::Bar
 
