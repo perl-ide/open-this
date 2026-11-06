@@ -147,10 +147,12 @@ disk.  All security caveats apply when requiring 3rd party modules.
     # Open a binary which is in your $ENV{PATH} at an arbitrary column and line
     ot cpanm:10:3
 
-    # open Foo::Bar on the GitHub or Codeberg web site in your browser
+    # open Foo::Bar on your forge's web site (GitHub, GitLab, Codeberg,
+    # Bitbucket or SourceHut) in your browser
     ot -b Foo::Bar
 
-    # open a file locally, using a GitHub link.  You must be at the top level
+    # open a file locally, using a GitHub (or GitLab, Codeberg, Bitbucket,
+    # SourceHut) link.  You must be at the top level
     # of this repository on a local checkout.
     ot https://github.com/oalders/git-helpers/blob/master/lib/Git/Helpers.pm#L50
 
@@ -179,8 +181,9 @@ disk.  All security caveats apply when requiring 3rd party modules.
 
 =head2 -b|--browse
 
-Open the file on the GitHub or Codeberg web site using your default browser,
-rather than invoking a local editor.
+Open the file on your forge's web site using your default browser, rather than
+invoking a local editor.  GitHub, GitLab, Codeberg, Bitbucket and SourceHut are
+supported; other hosts get GitHub-style URLs.
 
     ot -b Foo::Bar
 
