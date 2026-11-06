@@ -61,6 +61,11 @@ my @forge_urls = (
         'Codeberg src/commit URL'
     ],
     [
+        'https://codeberg.org/o/open-this/src/tag/v1.0/lib/Open/This.pm#L75',
+        [ '+75', 'lib/Open/This.pm' ],
+        'Codeberg src/tag URL'
+    ],
+    [
         'https://gitlab.com/group/sub/repo/-/blob/main/lib/Open/This.pm#L75',
         [ '+75', 'lib/Open/This.pm' ],
         'GitLab -/blob URL with subgroup'

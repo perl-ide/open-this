@@ -245,7 +245,8 @@ sub _maybe_extract_line_number {
         return $2, $3;
     }
 
-    # Bitbucket links: foo/bar.go#lines-100(:110); before rg/git-grep eat ":110"
+    # Bitbucket links: foo/bar.go#lines-100 or foo/bar.go#lines-100:110
+    # Must run before the git-grep rule, which would read ":110" as the line.
     if ( $$text =~ s{(\w)#lines-(\d+)\b.*}{$1} ) {
         return $2;
     }
