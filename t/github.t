@@ -100,10 +100,14 @@ my @forge_urls = (
         ['lib/Open/This.pm'],
         'trailing slash is ignored'
     ],
+    [
+        'https://github.com/o/r/blob/main//lib/Open/This.pm',
+        ['lib/Open/This.pm'],
+        'empty segment from // is ignored'
+    ],
     map { [ $_, [], "no file in $_" ] } qw(
         https://github.com/o/r/blob/main
         https://gitlab.com/g/r/-
-        https://gitlab.com/g/r/-/blob
         https://codeberg.org/o/r/src
         https://git.sr.ht/~u/r/tree
     ),

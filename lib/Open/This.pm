@@ -320,7 +320,7 @@ sub _maybe_extract_file_from_url {
 
     # path_segments decodes each segment, so "%20" becomes a space
     my ( undef, @parts ) = $uri->path_segments;
-    my @p = map { $parts[$_] // q{} } 0 .. 5;
+    my @p = map { $parts[$_] // q{} } 0 .. 4;
 
     # GitLab nests groups, so "-/blob" can follow any number of segments
     my ($gitlab)
@@ -342,18 +342,17 @@ sub _maybe_extract_file_from_url {
     my @file
         = defined $start ? grep { length } @parts[ $start .. $#parts ] : ();
 
-    if (@file) {
-        my $file = path(@file);
+    return unless @file;
 
-        return unless $file->is_file;
+    my $file = path(@file);
+    return unless $file->is_file;
 
-        $file = $file->stringify;
+    $file = $file->stringify;
 
-        if ( $uri->fragment && $uri->fragment =~ m{\A[\d]\z} ) {
-            $file .= ':' . $uri->fragment;
-        }
-        return $file if $file;
+    if ( $uri->fragment && $uri->fragment =~ m{\A[\d]\z} ) {
+        $file .= ':' . $uri->fragment;
     }
+    return $file;
 }
 
 sub _maybe_find_local_file {
