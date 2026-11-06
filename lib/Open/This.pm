@@ -22,7 +22,6 @@ use Module::Util ();
 use Path::Tiny   qw( path );
 use Try::Tiny    qw( catch try );
 use URI          ();
-use URI::Escape  qw( uri_unescape );
 
 ## no critic (Subroutines::ProhibitExplicitReturnUndef)
 
@@ -330,15 +329,28 @@ sub _maybe_extract_file_from_url {
     require_module('URI');
     my $uri = URI->new($$text);
 
-    # GitLab "/-/blob/" (any subgroup depth), GitHub, Codeberg, Bitbucket, sr.ht
-    if (
-        $uri->path =~ m{(?|
-            /-/blob/[^/]+/(.+)
-            | \A/[^/]+/[^/]+/(?:blob|src/(?:branch|tag|commit)|src)/[^/]+/(.+)
-            | \A/[^/]+/[^/]+/tree/[^/]+/item/(.+)
-        )}x
-    ) {
-        my $file = path( uri_unescape($1) );
+    # path_segments decodes each segment, so "%20" becomes a space
+    my ( undef, @parts ) = $uri->path_segments;
+    my @p = map { $parts[$_] // q{} } 0 .. 5;
+
+    # GitLab nests groups, so "-/blob" can follow any number of segments
+    my ($gitlab)
+        = grep { $parts[$_] eq '-' && ( $parts[ $_ + 1 ] // q{} ) eq 'blob' }
+        0 .. $#parts;
+
+    # Index of the first file segment, after owner/repo/<marker>/<ref>
+    my $start;
+    if    ( defined $gitlab ) { $start = $gitlab + 3 }
+    elsif ( $p[2] eq 'blob' ) { $start = 4 }                       # GitHub
+    elsif ( $p[2] eq 'tree' && $p[4] eq 'item' ) { $start = 5 }    # SourceHut
+    elsif ( $p[2] eq 'src' ) {
+
+        # Codeberg has src/branch|tag|commit/<ref>, Bitbucket src/<ref>
+        $start = $p[3] =~ m{\A(?:branch|tag|commit)\z} ? 5 : 4;
+    }
+
+    if ( defined $start && $start <= $#parts ) {
+        my $file = path( @parts[ $start .. $#parts ] );
 
         return unless $file->is_file;
 
