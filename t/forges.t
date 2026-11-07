@@ -1,14 +1,16 @@
 use strict;
 use warnings;
 
-use Open::This qw( maybe_get_url_from_parsed_text );
-use Test::More import => [qw( done_testing is )];
+use Open::This qw( maybe_get_url_from_parsed_text to_editor_args );
+use Test::More import => [qw( done_testing is is_deeply )];
 use Test::Needs    qw( Git::Helpers );
 use Test::Warnings ();
 use URI            ();
 
 no warnings 'redefine';
 local *Git::Helpers::current_branch_name = sub { 'topic' };
+
+local $ENV{EDITOR} = 'vim';
 
 my $file  = 'lib/Open/This.pm';
 my @cases = (
@@ -41,19 +43,21 @@ my @cases = (
 for my $case (@cases) {
     my ( $remote, $expected ) = @$case;
     local *Git::Helpers::https_remote_url = sub { URI->new($remote) };
-    is(
-        maybe_get_url_from_parsed_text(
-            { file_name => $file, line_number => 32 }
-        ),
-        $expected,
-        "browse URL for $remote"
-    );
+    my $url = maybe_get_url_from_parsed_text(
+        { file_name => $file, line_number => 32 } );
+    is( $url, $expected, "browse URL for $remote" );
 
     ( my $no_line = $expected ) =~ s{#.*}{};
     is(
         maybe_get_url_from_parsed_text( { file_name => $file } ),
         $no_line,
         "browse URL without a line anchor for $remote"
+    );
+
+    is_deeply(
+        [ to_editor_args($url) ],
+        [ '+32', $file ],
+        "browse URL for $remote parses back to the file and line"
     );
 }
 

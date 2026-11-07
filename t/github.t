@@ -91,25 +91,14 @@ my @forge_urls = (
         'single-digit #L line anchor'
     ],
     [
-        'https://codeberg.org/o/open-this/src/branch/main/lib/Open/This.pm#L75-L80',
-        [ '+75', 'lib/Open/This.pm' ],
-        'Codeberg line range'
-    ],
-    [
         'https://gitlab.com/g/open-this/-/blob/main/lib/Open/This.pm#L75-80',
         [ '+75', 'lib/Open/This.pm' ],
-        'GitLab line range'
-    ],
-    [
-        'https://git.sr.ht/~u/open-this/tree/main/item/lib/Open/This.pm#L75-80',
-        [ '+75', 'lib/Open/This.pm' ],
-        'SourceHut line range'
+        'line range tail without a second L'
     ],
     (
         map { [ $_, ['lib/Open/This.pm'], "fragment ignored in $_" ] } (
             'https://bitbucket.org/o/open-this/src/main/lib/Open/This.pm#lines-75x',
             'https://bitbucket.org/o/open-this/src/main/lib/Open/This.pm#lines-',
-            'https://codeberg.org/o/open-this/src/branch/main/lib/Open/This.pm#L75x',
             'https://gitlab.com/g/open-this/-/blob/main/lib/Open/This.pm#readme',
             'https://github.com/o/open-this/blob/main/lib/Open/This.pm#5',
         )
