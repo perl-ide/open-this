@@ -115,7 +115,18 @@ sub maybe_get_url_from_parsed_text {
     my $parsed = shift;
     return undef unless $parsed && $parsed->{file_name};
 
-    my $url = Git::Helpers::https_remote_url();
+    # enable used remote to be configurable via environment variable
+    my $url;
+REMOTE:
+    for my $remote (
+        split( m{,}, $ENV{OPEN_THIS_REMOTES} || q{} ),
+        q{origin}
+    ) {
+        $url = Git::Helpers::https_remote_url($remote);
+
+        last REMOTE if $url;
+    }
+
     return undef unless $url && $url->can('host');
     $parsed->{remote_url} = $url;
 
@@ -483,11 +494,15 @@ directly.)
 
 =head2 maybe_get_url_from_parsed_text
 
-Tries to return an URL to a Git repository for a checked out file.  The URL
-will be built using the C<origin> remote and the name of the current branch.  A
-line number will be attached if it can be parsed from the text.  This has only
-currently be tested with GitHub URLs and it assumes you're working on a branch
-which has already been pushed to your remote.
+Tries to return an URL to a Git repository for a checked out file. The used
+remote is C<origin> per default, but is configurable via the environment
+variable C<$ENV{OPEN_THIS_REMOTES}>. It accepts a comma-separated list and
+C<origin> is used as fallback. The URL will be built using the first  remote
+in C<$ENV{OPEN_THIS_REMOTES}> that exists, otherwise C<origin>, and the name
+of the current branch.  A line number will be attached if it can be parsed
+from the text.  This has only currently be tested with GitHub URLs and it
+assumes you're working on a branch which has already been pushed to your
+remote.
 
     my $url = maybe_get_url_from_parsed_text( parse_text('t/lib/Foo/Bar.pm:32'));
     # $url might be something like: https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L32
