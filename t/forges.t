@@ -48,6 +48,13 @@ for my $case (@cases) {
         $expected,
         "browse URL for $remote"
     );
+
+    ( my $no_line = $expected ) =~ s{#.*}{};
+    is(
+        maybe_get_url_from_parsed_text( { file_name => $file } ),
+        $no_line,
+        "browse URL without a line anchor for $remote"
+    );
 }
 
 done_testing();

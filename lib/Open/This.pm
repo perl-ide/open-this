@@ -358,12 +358,7 @@ sub _maybe_extract_file_from_url {
     my $file = path(@file);
     return unless $file->is_file;
 
-    $file = $file->stringify;
-
-    if ( $uri->fragment && $uri->fragment =~ m{\A[\d]\z} ) {
-        $file .= ':' . $uri->fragment;
-    }
-    return $file;
+    return $file->stringify;
 }
 
 sub _maybe_find_local_file {
