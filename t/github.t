@@ -135,6 +135,8 @@ my @forge_urls = (
         't%2F..%2Flib/Open/This.pm',
         uri_escape( path('lib/Open/This.pm')->absolute, '^A-Za-z0-9._~-' ),
     ),
+
+    # Test::Warnings catches a regression: Path::Tiny warns on NUL
     [
         'https://github.com/o/r/blob/main/lib/Open/This.pm%00x',
         [],
