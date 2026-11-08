@@ -21,16 +21,18 @@ $repo->child('lib')->mkpath;
 $repo->child('lib/Foo.pm')->spew('1;');
 
 my $cwd = path('.')->absolute;
+
+# CI has no git identity, and both the commit and the annotated tag need one
+local @ENV{
+    qw( GIT_AUTHOR_NAME GIT_AUTHOR_EMAIL GIT_COMMITTER_NAME GIT_COMMITTER_EMAIL )
+} = qw( t t@t t t@t );
 chdir $repo or die "chdir $repo: $!";
 for my $cmd (
     [qw( init -q )],
-    [
-        qw( -c user.name=t -c user.email=t@t -c commit.gpgsign=false
-            commit -q --allow-empty -m init )
-    ],
+    [qw( -c commit.gpgsign=false commit -q --allow-empty -m init )],
     [qw( branch feature/x )],
     [qw( branch release/2026/q1 )],
-    [qw( tag -a -m rel rel/1 )],
+    [qw( -c tag.gpgsign=false tag -a -m rel rel/1 )],
     [qw( update-ref refs/remotes/origin/feature/y HEAD )],
 ) {
     system( 'git', @$cmd ) == 0 or die "git @$cmd failed";
