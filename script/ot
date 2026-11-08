@@ -226,6 +226,18 @@ Or
 Probably you want to export this variable in your C<~/.bashrc> file (or some
 other appropriate place in your dot files.
 
+
+The C<browse> feature uses the C<origin> remote per default. You can override
+this via the C<$ENV{OPEN_THIS_REMOTES}> variable. It accepts a comma-separated
+list of remotes and uses the first one of those which is available in the repository.
+The fallback is C<origin>.
+
+    export OPEN_THIS_REMOTES=someremote,someotherremote
+
+Or
+
+    OPEN_THIS_REMOTES=someremote,someotherremote ot --browse Foo::Bar
+
 =head1 SUPPORTED EDITORS
 
 This code has been tested with C<vim>, C<nvim>, C<emacs>, C<pico>, C<nano>,
