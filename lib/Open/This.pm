@@ -331,7 +331,7 @@ sub _maybe_extract_file_from_url {
 
     # path_segments decodes each segment, so "%20" becomes a space
     my ( undef, @parts ) = $uri->path_segments;
-    my @p = map { $parts[$_] // q{} } 0 .. 4;
+    my @p = map { $parts[$_] // q{} } 0 .. 3;
 
     # GitLab nests groups, so "-/blob" can follow any number of segments
     my ($gitlab)
@@ -340,25 +340,55 @@ sub _maybe_extract_file_from_url {
 
     # Index of the first file segment, after owner/repo/<marker>/<ref>
     my $start;
+    my $last = $#parts;    # last index the file may start at
     if    ( defined $gitlab ) { $start = $gitlab + 3 }
-    elsif ( $p[2] eq 'blob' ) { $start = 4 }                       # GitHub
-    elsif ( $p[2] eq 'tree' && $p[4] eq 'item' ) { $start = 5 }    # SourceHut
+    elsif ( $p[2] eq 'blob' ) { $start = 4 }             # GitHub
+    elsif ( $p[2] eq 'tree' ) {
+
+        # SourceHut has tree/<ref>/item/<file>, so "item" ends the ref
+        my ($item) = grep { $parts[$_] eq 'item' } 4 .. $#parts;
+        $start = $last = $item + 1 if defined $item;
+    }
     elsif ( $p[2] eq 'src' ) {
 
         # Codeberg has src/branch|tag|commit/<ref>, Bitbucket src/<ref>
         $start = $p[3] =~ m{\A(?:branch|tag|commit)\z} ? 5 : 4;
     }
 
-    # Drop empty segments from "//" or a trailing slash; path() dies on them
-    my @file
-        = defined $start ? grep { length } @parts[ $start .. $#parts ] : ();
+    return unless defined $start;
 
-    return unless @file;
+    # A ref like "feature/x" spans segments, so try longer refs that git knows
+    for my $i ( $start .. $last ) {
 
-    my $file = path(@file);
-    return unless $file->is_file;
+        # Drop empty segments from "//" or a trailing slash; path() dies on them
+        my @file = grep { length } @parts[ $i .. $#parts ];
+        last unless @file;
 
-    return $file->stringify;
+        my $file = path(@file);
+        next unless $file->is_file;
+        next
+            if $i > $start
+            && !_is_git_ref( join '/', @parts[ $start - 1 .. $i - 1 ] );
+
+        return $file->stringify;
+    }
+    return;
+}
+
+sub _is_git_ref {
+    my $ref = shift;
+
+    require_module('File::Spec');
+
+    # show-ref matches refs/heads, refs/tags and refs/remotes/*; outside a
+    # repo git complains on stderr, so silence it
+    open my $stderr, '>&', \*STDERR or return 0;
+    my $found;
+    if ( open STDERR, '>', File::Spec->devnull ) {
+        $found = system( 'git', 'show-ref', '--quiet', '--', $ref ) == 0;
+    }
+    open STDERR, '>&', $stderr;
+    return $found;
 }
 
 sub _maybe_find_local_file {
