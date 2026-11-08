@@ -102,13 +102,16 @@ chdir $no_repo or die "chdir $no_repo: $!";
     my $err = $no_repo->child('stderr');
     open my $saved, '>&', \*STDERR or die "dup STDERR: $!";
     open STDERR,    '>',  "$err"   or die "redirect STDERR: $!";
-    my @got
-        = to_editor_args('https://github.com/o/r/blob/feature/x/lib/Foo.pm');
+    my @got = eval {
+        to_editor_args('https://github.com/o/r/blob/feature/x/lib/Foo.pm');
+    };
+    my $git_said = $err->slurp;
     print STDERR 'restored';
     open STDERR, '>&', $saved or die "restore STDERR: $!";
 
     eq_or_diff( \@got, [], 'slash ref outside a repo names no file' );
-    is( $err->slurp, 'restored', 'git stays quiet and STDERR is restored' );
+    is( $git_said,   q{},        'git stays quiet outside a repo' );
+    is( $err->slurp, 'restored', 'STDERR works again afterwards' );
 }
 
 chdir $cwd or die "chdir $cwd: $!";

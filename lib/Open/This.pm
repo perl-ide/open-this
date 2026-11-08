@@ -356,8 +356,8 @@ sub _maybe_extract_file_from_url {
     }
 
     # Forges never serve ".." or an encoded "/" or "\" (a Windows separator)
-    # in a path, so don't let a URL leave the repo
-    return if !defined $start || grep { $_ eq '..' || m{[/\\]} } @parts;
+    # in a path, so don't let a URL leave the repo; NUL can't name a file
+    return if !defined $start || grep { $_ eq '..' || m{[/\\\0]} } @parts;
 
     # A ref like "feature/x" spans segments, so try longer refs that git knows
     for my $i ( $start .. $last ) {

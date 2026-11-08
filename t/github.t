@@ -6,6 +6,7 @@ use Path::Tiny        qw( path );
 use Test::Differences qw( eq_or_diff );
 use Test::More import => [qw( done_testing )];
 use Test::Warnings ();
+use URI::Escape    qw( uri_escape );
 
 # This gets really noisy on Travis if $ENV{EDITOR} is not set
 local $ENV{EDITOR} = 'vim';
@@ -132,8 +133,13 @@ my @forge_urls = (
             ]
         } 't/../lib/Open/This.pm',
         't%2F..%2Flib/Open/This.pm',
-        join( '%2F', q{}, split m{/}, path('lib/Open/This.pm')->absolute ),
+        uri_escape( path('lib/Open/This.pm')->absolute, '^A-Za-z0-9._~-' ),
     ),
+    [
+        'https://github.com/o/r/blob/main/lib/Open/This.pm%00x',
+        [],
+        'NUL in a path names no file'
+    ],
     map { [ $_, [], "no file in $_" ] } qw(
         https://github.com/o/r/blob/main
         https://gitlab.com/g/r/-
