@@ -4,7 +4,7 @@ use warnings;
 use Open::This        qw( to_editor_args );
 use Path::Tiny        qw( path tempdir );
 use Test::Differences qw( eq_or_diff );
-use Test::More import => [qw( done_testing )];
+use Test::More import => [qw( done_testing is )];
 use Test::Requires::Git;
 use Test::Warnings ();
 
@@ -96,14 +96,19 @@ $no_repo->child('lib/Foo.pm')->spew('1;');
 chdir $no_repo or die "chdir $no_repo: $!";
 {
     local $ENV{GIT_CEILING_DIRECTORIES} = $no_repo->parent->stringify;
-    eq_or_diff(
-        [
-            to_editor_args(
-                'https://github.com/o/r/blob/feature/x/lib/Foo.pm')
-        ],
-        [],
-        'slash ref outside a repo names no file'
-    );
+
+    # git's "not a git repository" must not reach the terminal, and STDERR
+    # must work again afterwards
+    my $err = $no_repo->child('stderr');
+    open my $saved, '>&', \*STDERR or die "dup STDERR: $!";
+    open STDERR,    '>',  "$err"   or die "redirect STDERR: $!";
+    my @got
+        = to_editor_args('https://github.com/o/r/blob/feature/x/lib/Foo.pm');
+    print STDERR 'restored';
+    open STDERR, '>&', $saved or die "restore STDERR: $!";
+
+    eq_or_diff( \@got, [], 'slash ref outside a repo names no file' );
+    is( $err->slurp, 'restored', 'git stays quiet and STDERR is restored' );
 }
 
 chdir $cwd or die "chdir $cwd: $!";

@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Open::This        qw( to_editor_args );
+use Path::Tiny        qw( path );
 use Test::Differences qw( eq_or_diff );
 use Test::More import => [qw( done_testing )];
 use Test::Warnings ();
@@ -123,11 +124,16 @@ my @forge_urls = (
         ['lib/Open/This.pm'],
         'empty segment from // is ignored'
     ],
-    [
-        'https://github.com/o/r/blob/main/../../../../../../../../etc/hostname',
-        [],
-        '.. segments do not leave the repo'
-    ],
+    (
+        map {
+            [
+                "https://github.com/o/r/blob/main/$_", [],
+                "no traversal via $_"
+            ]
+        } 't/../lib/Open/This.pm',
+        't%2F..%2Flib/Open/This.pm',
+        join( '%2F', q{}, split m{/}, path('lib/Open/This.pm')->absolute ),
+    ),
     map { [ $_, [], "no file in $_" ] } qw(
         https://github.com/o/r/blob/main
         https://gitlab.com/g/r/-

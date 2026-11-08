@@ -355,8 +355,9 @@ sub _maybe_extract_file_from_url {
         $start = $p[3] =~ m{\A(?:branch|tag|commit)\z} ? 5 : 4;
     }
 
-    # Forges never serve ".." in a path, so don't let a URL leave the repo
-    return if !defined $start || grep { $_ eq '..' } @parts;
+    # Forges never serve ".." or an encoded "/" or "\" (a Windows separator)
+    # in a path, so don't let a URL leave the repo
+    return if !defined $start || grep { $_ eq '..' || m{[/\\]} } @parts;
 
     # A ref like "feature/x" spans segments, so try longer refs that git knows
     for my $i ( $start .. $last ) {
