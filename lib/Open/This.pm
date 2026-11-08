@@ -355,7 +355,8 @@ sub _maybe_extract_file_from_url {
         $start = $p[3] =~ m{\A(?:branch|tag|commit)\z} ? 5 : 4;
     }
 
-    return unless defined $start;
+    # Forges never serve ".." in a path, so don't let a URL leave the repo
+    return if !defined $start || grep { $_ eq '..' } @parts;
 
     # A ref like "feature/x" spans segments, so try longer refs that git knows
     for my $i ( $start .. $last ) {
@@ -383,7 +384,7 @@ sub _is_git_ref {
     # show-ref matches refs/heads, refs/tags and refs/remotes/*; outside a
     # repo git complains on stderr, so silence it
     open my $stderr, '>&', \*STDERR or return 0;
-    my $found;
+    my $found = 0;
     if ( open STDERR, '>', File::Spec->devnull ) {
         $found = system( 'git', 'show-ref', '--quiet', '--', $ref ) == 0;
     }

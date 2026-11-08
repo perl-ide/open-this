@@ -123,6 +123,11 @@ my @forge_urls = (
         ['lib/Open/This.pm'],
         'empty segment from // is ignored'
     ],
+    [
+        'https://github.com/o/r/blob/main/../../../../../../../../etc/hostname',
+        [],
+        '.. segments do not leave the repo'
+    ],
     map { [ $_, [], "no file in $_" ] } qw(
         https://github.com/o/r/blob/main
         https://gitlab.com/g/r/-
