@@ -161,4 +161,22 @@ eq_or_diff(
     'non-URL package name starting with HTTP gets handled properly'
 );
 
+eq_or_diff(
+    [
+        to_editor_args(
+            'https://example.com:8443/o/r/blob/main/lib/Open/This.pm')
+    ],
+    ['lib/Open/This.pm'],
+    'URL port is not a line number'
+);
+
+eq_or_diff(
+    [
+        to_editor_args(
+            'https://example.com:8443/o/r/blob/main/lib/Open/This.pm#L75')
+    ],
+    [ '+75', 'lib/Open/This.pm' ],
+    'URL port is not a line number, fragment still is'
+);
+
 done_testing();
