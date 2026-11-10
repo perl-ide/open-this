@@ -156,9 +156,10 @@ REMOTE:
             try {
                 $branch = Git::Helpers::current_branch_name();
 
-                # Dies unless tracked, so untracked and ignored files get no URL
-                @repo_path = git::ls_files(
-                    '--full-name', '--error-unmatch', '--',
+                # ls-tree, unlike ls-files, runs no repo-configured fsmonitor
+                local $/ = "\0";
+                @repo_path = git::ls_tree(
+                    qw( -z --full-name --name-only HEAD -- ),
                     ':(literal)' . $file->basename
                 );
             };
@@ -594,8 +595,9 @@ directly.)
 
 Tries to return an URL to a Git repository for a checked out file. The
 repository, remote and branch are those of the checkout the file lives in,
-which need not be the one you are in. The file must be tracked by Git;
-otherwise, or if the file is outside any checkout, C<undef> is returned. The
+which need not be the one you are in. The file must be committed on the
+current branch; otherwise, or if the file is outside any checkout, C<undef> is
+returned. The
 URL will be built using the first remote listed in
 C<$ENV{OPEN_THIS_REMOTES}> (comma-separated) that exists, falling back to
 C<origin>, the name of the checkout's current branch and the file's path from

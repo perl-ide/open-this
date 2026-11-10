@@ -115,7 +115,7 @@ subtest 'bad option with target still opens' => sub {
     script_stdout_is( "--line 222 lib/Open/This.pm\n", 'prints editor args' );
 };
 
-subtest 'browse absolute path' => sub {
+subtest 'browse accepts an absolute path' => sub {
     script_runs(
         [ './script/ot', '--browse', $abs_path ], {@browse_stub},
         'runs'

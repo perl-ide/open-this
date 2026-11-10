@@ -22,7 +22,7 @@ sub Git::Helpers::current_branch_name {
 }
 
 # Run from the dist root, where every browse test's file is lib/Open/This.pm
-sub git::ls_files {
+sub git::ls_tree {
     return 'lib/Open/This.pm';
 }
 

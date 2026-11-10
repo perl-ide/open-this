@@ -38,25 +38,36 @@ SKIP: {
     # Keep outside.pm outside any repo even when TMPDIR is in a checkout
     local $ENV{GIT_CEILING_DIRECTORIES} = $tmp->parent->stringify;
 
+    # Windows forbids ':' in file names, and its filename bytes are unreliable
+    my $windows   = $^O eq 'MSWin32';
+    my $cafe      = "lib/caf\xc3\xa9.pm";
+    my @committed = (
+        qw( .gitignore lib/Open/This.pm lib/x.pm ),
+        $windows ? () : $cafe
+    );
+
     my %remote = ( repo => 'Orig', other => 'Other' );
     for my $name ( sort keys %remote ) {
         my $repo = $tmp->child($name);
         $repo->child('lib/Open')->mkpath;
         $repo->child($_)->spew('1;')
-            for qw( lib/Open/This.pm lib/Untracked.pm lib/Ignored.pm );
+            for @committed,
+            qw( lib/Untracked.pm lib/Ignored.pm lib/Staged.pm ),
+            $windows ? () : 'lib/:x.pm';
         $repo->child('.gitignore')->spew("lib/Ignored.pm\n");
         chdir $repo or die "chdir $repo: $!";
         for my $cmd (
             [qw( git init -q )],
+            [ qw( git symbolic-ref HEAD ), "refs/heads/$name" ],
+            [ qw( git add -- ),            @committed ],
             [
-                qw( git -c user.name=t -c user.email=t@example.com -c commit.gpgsign=false commit -q --allow-empty -m init )
+                qw( git -c user.name=t -c user.email=t@example.com -c commit.gpgsign=false commit -q -m init )
             ],
-            [ qw( git checkout -q -b ), $name ],
+            [qw( git add lib/Staged.pm )],
             [
                 qw( git remote add origin ),
                 "https://github.com/$remote{$name}/repo.git"
             ],
-            [qw( git add .gitignore lib/Open/This.pm )],
         ) {
             system(@$cmd) == 0 or die "@$cmd failed";
         }
@@ -98,8 +109,15 @@ SKIP: {
             $expected, "$file_name maps to its path from the repo root"
         );
     }
-    is( path('.')->absolute, $lib, 'cwd is restored' );
+    is( path('.')->realpath, $lib->realpath, 'cwd is restored' );
 
+    # A hostile checkout's fsmonitor hook must not run
+    my $marker = $tmp->child('fsmonitor-ran');
+    system(
+        qw( git -C ../../other config core.fsmonitor ),
+        "echo >'$marker'"
+        ) == 0
+        or die 'git config failed';
     is(
         maybe_get_url_from_parsed_text(
             { file_name => '../../other/lib/Open/This.pm' }
@@ -107,8 +125,23 @@ SKIP: {
         'https://github.com/Other/repo/blob/other/lib/Open/This.pm',
         'file in another checkout uses its remote and branch'
     );
+    ok( !-e $marker, 'fsmonitor hook did not run' );
 
-    for my $file_name ( 'Untracked.pm', 'Ignored.pm', '../../outside.pm' ) {
+SKIP: {
+        skip 'filename bytes are unreliable on Windows', 1 if $windows;
+        is(
+            maybe_get_url_from_parsed_text( { file_name => "../$cafe" } ),
+            'https://github.com/Orig/repo/blob/repo/lib/caf%C3%A9.pm',
+            'non-ASCII file name'
+        );
+    }
+
+    # Without a literal pathspec, :x.pm would match the committed x.pm
+    for my $file_name (
+        'Untracked.pm', 'Ignored.pm', 'Staged.pm',
+        ( $windows ? () : ':x.pm' ),
+        '../../outside.pm'
+    ) {
         is(
             maybe_get_url_from_parsed_text( { file_name => $file_name } ),
             undef, "no URL for $file_name"
