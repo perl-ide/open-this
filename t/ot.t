@@ -116,23 +116,13 @@ subtest 'bad option with target still opens' => sub {
 };
 
 subtest 'browse absolute path' => sub {
-    script_fails(
-        [ './script/ot', '--browse', $abs_path ],
-        { exit => 1, @browse_stub },
-        'exits 1'
-    );
-    script_stderr_like( qr/Cannot browse an absolute path/, 'reports error' );
-};
-
-subtest 'browse absolute path, json' => sub {
-    script_fails(
-        [ './script/ot', '--browse', '--json', $abs_path ],
-        { exit => 1, @browse_stub },
-        'exits 1'
+    script_runs(
+        [ './script/ot', '--browse', $abs_path ], {@browse_stub},
+        'runs'
     );
     script_stdout_is(
-        qq({"details":"$abs_path","error":"Cannot browse an absolute path","success":false}\n),
-        'error in JSON'
+        "https://github.com/o/r/blob/topic/lib/Open/This.pm\n",
+        'opens repository URL'
     );
 };
 

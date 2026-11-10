@@ -3,13 +3,16 @@ use warnings;
 
 use Carp::Always;
 use Open::This qw( maybe_get_url_from_parsed_text );
-use Path::Tiny qw(path tempdir);
+use Path::Tiny qw( path tempdir );
 use Test::More import => [qw( done_testing is like ok skip )];
 use Test::Needs qw( Git::Helpers );
 use Test::Requires::Git;
 use URI ();
 
 test_requires_git();
+
+# A hook's GIT_DIR would point git at another repo
+delete local @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 
 SKIP: {
     skip 'must be inside Git checkout', 1
@@ -29,19 +32,41 @@ SKIP: {
 }
 
 {
-    my $cwd  = path('.')->absolute;
-    my $repo = tempdir();
-    chdir $repo or die "chdir $repo: $!";
-    for my $cmd (
-        [qw( git init -q )],
-        [
-            qw( git -c user.name=t -c user.email=t@example.com -c commit.gpgsign=false commit -q --allow-empty -m init )
-        ],
-        [qw( git remote add origin https://github.com/Orig/repo.git )],
-        [qw( git remote add upstream git@github.com:Up/repo.git )],
-    ) {
-        system(@$cmd) == 0 or die "@$cmd failed";
+    my $cwd = path('.')->absolute;
+    my $tmp = tempdir();
+
+    # Keep outside.pm outside any repo even when TMPDIR is in a checkout
+    local $ENV{GIT_CEILING_DIRECTORIES} = $tmp->parent->stringify;
+
+    my %remote = ( repo => 'Orig', other => 'Other' );
+    for my $name ( sort keys %remote ) {
+        my $repo = $tmp->child($name);
+        $repo->child('lib/Open')->mkpath;
+        $repo->child($_)->spew('1;')
+            for qw( lib/Open/This.pm lib/Untracked.pm lib/Ignored.pm );
+        $repo->child('.gitignore')->spew("lib/Ignored.pm\n");
+        chdir $repo or die "chdir $repo: $!";
+        for my $cmd (
+            [qw( git init -q )],
+            [
+                qw( git -c user.name=t -c user.email=t@example.com -c commit.gpgsign=false commit -q --allow-empty -m init )
+            ],
+            [ qw( git checkout -q -b ), $name ],
+            [
+                qw( git remote add origin ),
+                "https://github.com/$remote{$name}/repo.git"
+            ],
+            [qw( git add .gitignore lib/Open/This.pm )],
+        ) {
+            system(@$cmd) == 0 or die "@$cmd failed";
+        }
     }
+    $tmp->child('outside.pm')->spew('1;');
+
+    my $repo = $tmp->child('repo');
+    chdir $repo or die "chdir $repo: $!";
+    system(qw( git remote add upstream git@github.com:Up/repo.git )) == 0
+        or die 'git remote add failed';
 
     for my $case (
         [ q{},               qr{^/Orig/repo/blob/} ],
@@ -57,6 +82,36 @@ SKIP: {
         like(
             URI->new($current_url)->path, $expected,
             "OPEN_THIS_REMOTES='$remotes'"
+        );
+    }
+
+    local $ENV{OPEN_THIS_REMOTES} = q{};
+    my $lib = $repo->child('lib');
+    chdir $lib or die "chdir $lib: $!";
+    my $expected = 'https://github.com/Orig/repo/blob/repo/lib/Open/This.pm';
+    for my $file_name (
+        'Open/This.pm', '../lib/Open/This.pm',
+        $lib->child('Open/This.pm')->stringify
+    ) {
+        is(
+            maybe_get_url_from_parsed_text( { file_name => $file_name } ),
+            $expected, "$file_name maps to its path from the repo root"
+        );
+    }
+    is( path('.')->absolute, $lib, 'cwd is restored' );
+
+    is(
+        maybe_get_url_from_parsed_text(
+            { file_name => '../../other/lib/Open/This.pm' }
+        ),
+        'https://github.com/Other/repo/blob/other/lib/Open/This.pm',
+        'file in another checkout uses its remote and branch'
+    );
+
+    for my $file_name ( 'Untracked.pm', 'Ignored.pm', '../../outside.pm' ) {
+        is(
+            maybe_get_url_from_parsed_text( { file_name => $file_name } ),
+            undef, "no URL for $file_name"
         );
     }
 

@@ -9,7 +9,6 @@ use Open::This   qw(
     maybe_get_url_from_parsed_text
     parse_text
 );
-use Path::Tiny qw( path );
 use Pod::Usage qw( pod2usage );
 
 pod2usage("Error: missing argument\n") unless @ARGV;
@@ -56,15 +55,6 @@ if ( !$parsed ) {
 }
 
 if ($browse) {
-
-    # Only a relative file name can be part of a repository URL.
-    if ( !path( $parsed->{file_name} )->is_relative ) {
-        exit_with_error(
-            'Cannot browse an absolute path',
-            $parsed->{file_name}
-        );
-    }
-
     maybe_get_url_from_parsed_text($parsed);
     if ( !exists $parsed->{remote_file_url} ) {
         exit_with_error( 'Could not find remote repository', $parsed );

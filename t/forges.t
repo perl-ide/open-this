@@ -10,9 +10,11 @@ use URI            ();
 no warnings 'redefine';
 local *Git::Helpers::current_branch_name = sub { 'topic' };
 
+my $file = 'lib/Open/This.pm';
+local *git::ls_files = sub { $file };
+
 local $ENV{EDITOR} = 'vim';
 
-my $file  = 'lib/Open/This.pm';
 my @cases = (
     [
         'https://github.com/o/r',
