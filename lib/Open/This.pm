@@ -168,6 +168,9 @@ sub editor_args_from_parsed_text {
 
     die '$EDITOR has not been set' unless $ENV{EDITOR};
 
+    # Editors would otherwise parse a leading + or - as a command or option.
+    ( my $file_name = $parsed->{file_name} ) =~ s{\A(?=[-+])}{./};
+
     my @args;
 
     # kate --line 11 --column 2 filename
@@ -186,7 +189,7 @@ sub editor_args_from_parsed_text {
     # code --goto filename:11:2
     # codium --goto filename:11:2
     elsif ( $ENV{EDITOR} =~ /^cod(e|ium)/i ) {
-        my $result = $parsed->{file_name};
+        my $result = $file_name;
         if ( $parsed->{line_number} ) {
             $result .= ":" . $parsed->{line_number};
             if ( $parsed->{column_number} ) {
@@ -231,7 +234,7 @@ sub editor_args_from_parsed_text {
         push @args, '+' . $parsed->{line_number} if $parsed->{line_number};
     }
 
-    return ( @args, $parsed->{file_name} );
+    return ( @args, $file_name );
 }
 
 sub _maybe_extract_line_number {
