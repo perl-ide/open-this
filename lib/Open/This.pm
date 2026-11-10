@@ -49,6 +49,12 @@ sub parse_text {
     return undef if !$text;
     my %parsed = ( original_text => $text );
 
+    # A URL authority can hold a port or password, which look like line numbers
+    if ( $text =~ m{\Ahttps?://}i ) {
+        my $authority = URI->new($text)->authority // q{};
+        $text =~ s{//\Q$authority\E}{//};
+    }
+
     my ( $line, $col ) = _maybe_extract_line_number( \$text );
     $parsed{line_number}   = $line;
     $parsed{column_number} = $col if $col;
@@ -272,8 +278,7 @@ sub _maybe_extract_line_number {
 
     # git-grep (don't match on ::)
     # lib/Open/This.pm:17
-    # A following "/" means a URL port, not a line number
-    if ( $$text =~ s{(\w):(\d+)\b(?!/)}{$1} ) {
+    if ( $$text =~ s{(\w):(\d+)\b}{$1} ) {
         return $2;
     }
 
