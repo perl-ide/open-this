@@ -56,18 +56,23 @@ if ( !$parsed ) {
 }
 
 if ($browse) {
-    my $url = maybe_get_url_from_parsed_text($parsed);
+
+    # Only a relative file name can be part of a repository URL.
+    if ( !path( $parsed->{file_name} )->is_relative ) {
+        exit_with_error(
+            'Cannot browse an absolute path',
+            $parsed->{file_name}
+        );
+    }
+
+    maybe_get_url_from_parsed_text($parsed);
     if ( !exists $parsed->{remote_file_url} ) {
         exit_with_error( 'Could not find remote repository', $parsed );
     }
 
-    # A relative path should be inside our repository
-    if ( path( $parsed->{remote_file_url} )->is_relative ) {
-        require Browser::Open;
-        Browser::Open::open_browser( $parsed->{remote_file_url} );
-        exit(0);
-    }
-    return undef;
+    require Browser::Open;
+    Browser::Open::open_browser( $parsed->{remote_file_url} );
+    exit(0);
 }
 
 local $ENV{EDITOR} = $editor || $ENV{EDITOR};
