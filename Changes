@@ -1,6 +1,11 @@
 Revision history for Open-This
 
 {{$NEXT}}
+    - Add -h|--help and -v|--version to ot (GH#79) (Olaf Alders)
+    - When an unknown or invalid option leaves no target to open, ot now prints
+      usage and exits 2, or prints a JSON error and exits 2 with --json.
+      Previously it reported "Could not locate file" and exited 1 (GH#79) (Olaf
+      Alders)
 
 0.000035  2025-10-28 17:23:31Z
     - Add script_fails to Test::Script import list in t/ot.t (GH#60) (Copilot)

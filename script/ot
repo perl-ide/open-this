@@ -16,15 +16,39 @@ pod2usage("Error: missing argument\n") unless @ARGV;
 
 my $browse;
 my $editor;
+my $help;
 my $json;
 my $print;
+my $version;
 
-GetOptions(
+my $options_ok = GetOptions(
     'browse|b'   => \$browse,
     'editor|e=s' => \$editor,
+    'help|h'     => \$help,
     'json|j'     => \$json,
     'print|p'    => \$print,
+    'version|v'  => \$version,
 );
+
+if ($help) {
+    pod2usage(
+        -exitval  => 0,
+        -output   => \*STDOUT,
+        -verbose  => 99,
+        -sections => [qw( SYNOPSIS PARAMETERS )],
+    );
+}
+
+if ($version) {
+    print STDOUT 'ot ', Open::This->VERSION, "\n";
+    exit(0);
+}
+
+# With a target left, carry on so unquoted text with a stray -foo still opens.
+if ( !$options_ok && !@ARGV ) {
+    exit_with_error( 'Invalid options', undef, 2 ) if $json;
+    pod2usage(2);
+}
 
 my $parsed = parse_text(@ARGV);
 if ( !$parsed ) {
@@ -75,9 +99,10 @@ if ($print) {
 sub exit_with_error {
     my $error   = shift;
     my $details = shift;
+    my $status  = shift // 1;
     unless ($json) {
         print STDERR $error, "\n";
-        exit(1);
+        exit($status);
     }
     require Cpanel::JSON::XS;    ## no perlimports
     my $json = Cpanel::JSON::XS->new->canonical->encode(
@@ -88,7 +113,7 @@ sub exit_with_error {
         }
     );
     print STDOUT $json, "\n";
-    exit(1);
+    exit($status);
 }
 
 exec $ENV{EDITOR}, @editor_args;
@@ -196,6 +221,10 @@ plugins.
 
     ot --editor kate Foo::Bar
 
+=head2 -h|--help
+
+Print usage information to C<STDOUT> and exit.
+
 =head2 -j|--json
 
 (Experimental). Print editor arguments to C<STDOUT> as well as an indication of success or
@@ -213,6 +242,10 @@ for writing editor-specific plugins.
     ot -p -e kate Foo::Bar
 
     ot --print --editor kate Foo::Bar
+
+=head2 -v|--version
+
+Print the version of C<ot> to C<STDOUT> and exit.
 
 =head1 ENVIRONMENT VARIABLES
 
