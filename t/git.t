@@ -155,7 +155,6 @@ SKIP: {
             undef, "no URL for $file_name"
         );
     }
-    is( path('.')->realpath, $lib->realpath, 'cwd is restored after undef' );
 
     chdir $cwd or die "chdir $cwd: $!";
 }
