@@ -161,4 +161,22 @@ eq_or_diff(
     'non-URL package name starting with HTTP gets handled properly'
 );
 
+my $f    = 'lib/Open/This.pm';
+my $path = "/o/r/blob/main/$f";
+
+for my $case (
+    [ "https://example.com:8443$path",              [$f] ],
+    [ "https://example.com:8443$path#L75",          [ '+75', $f ] ],
+    [ "https://example.com:8443$path:17",           [ '+17', $f ] ],
+    [ "https://example.com:8443$path line 5",       [ '+5',  $f ] ],
+    [ "https://user:123\@example.com$path",         [$f] ],
+    [ "https://user:123\@example.com:8443$path#L9", [ '+9', $f ] ],
+    [ "HTTPS://EXAMPLE.com:8443$path",              [$f] ],
+    [ "http://[::1]:8443$path",                     [$f] ],
+    [ 'https://example.com:8443/',                  [] ],
+) {
+    my ( $url, $expected ) = @$case;
+    eq_or_diff( [ to_editor_args($url) ], $expected, $url );
+}
+
 done_testing();

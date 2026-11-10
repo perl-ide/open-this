@@ -49,6 +49,12 @@ sub parse_text {
     return undef if !$text;
     my %parsed = ( original_text => $text );
 
+    # A URL authority can hold a port or password, which look like line numbers
+    if ( $text =~ m{\Ahttps?://}i ) {
+        my $authority = URI->new($text)->authority // q{};
+        $text =~ s{//\Q$authority\E}{//};
+    }
+
     my ( $line, $col ) = _maybe_extract_line_number( \$text );
     $parsed{line_number}   = $line;
     $parsed{column_number} = $col if $col;
