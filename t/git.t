@@ -118,6 +118,11 @@ SKIP: {
         "echo >'$marker'"
         ) == 0
         or die 'git config failed';
+
+    # Control: the hook must fire for ls-files, or its absence proves nothing
+    system(qw( git -C ../../other ls-files -- no-such-file ));
+    my $hook_fires = -e $marker;
+    unlink $marker;
     is(
         maybe_get_url_from_parsed_text(
             { file_name => '../../other/lib/Open/This.pm' }
@@ -125,7 +130,10 @@ SKIP: {
         'https://github.com/Other/repo/blob/other/lib/Open/This.pm',
         'file in another checkout uses its remote and branch'
     );
-    ok( !-e $marker, 'fsmonitor hook did not run' );
+SKIP: {
+        skip 'fsmonitor hook does not fire here', 1 unless $hook_fires;
+        ok( !-e $marker, 'fsmonitor hook did not run' );
+    }
 
 SKIP: {
         skip 'filename bytes are unreliable on Windows', 1 if $windows;
@@ -147,6 +155,7 @@ SKIP: {
             undef, "no URL for $file_name"
         );
     }
+    is( path('.')->realpath, $lib->realpath, 'cwd is restored after undef' );
 
     chdir $cwd or die "chdir $cwd: $!";
 }

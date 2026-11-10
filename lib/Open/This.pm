@@ -596,15 +596,14 @@ directly.)
 Tries to return an URL to a Git repository for a checked out file. The
 repository, remote and branch are those of the checkout the file lives in,
 which need not be the one you are in. The file must be committed on the
-current branch; otherwise, or if the file is outside any checkout, C<undef> is
-returned. The
-URL will be built using the first remote listed in
+current branch; otherwise, or if the file is outside any checkout, C<undef>
+is returned. The URL will be built using the first remote listed in
 C<$ENV{OPEN_THIS_REMOTES}> (comma-separated) that exists, falling back to
 C<origin>, the name of the checkout's current branch and the file's path from
-the root of the checkout. A line number will be attached if it can be parsed from the
-text. GitHub, GitLab, Codeberg, Bitbucket and SourceHut URL layouts are
-supported; other hosts get GitHub-style URLs. It assumes you're working on a
-branch which has already been pushed to your remote.
+the root of the checkout. A line number will be attached if it can be parsed
+from the text. GitHub, GitLab, Codeberg, Bitbucket and SourceHut URL layouts
+are supported; other hosts get GitHub-style URLs. It assumes you're working
+on a branch which has already been pushed to your remote.
 
     my $url = maybe_get_url_from_parsed_text( parse_text('t/lib/Foo/Bar.pm:32'));
     # $url might be something like: https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L32
