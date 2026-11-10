@@ -65,7 +65,7 @@ if ($browse) {
         );
     }
 
-    my $url = maybe_get_url_from_parsed_text($parsed);
+    maybe_get_url_from_parsed_text($parsed);
     if ( !exists $parsed->{remote_file_url} ) {
         exit_with_error( 'Could not find remote repository', $parsed );
     }
