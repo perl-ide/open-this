@@ -5,7 +5,7 @@ use Carp::Always;
 use Open::This qw( maybe_get_url_from_parsed_text );
 use Path::Tiny qw( path tempdir );
 use Test::More import => [qw( done_testing is like ok skip )];
-use Test::Needs qw( Git::Helpers );
+use Test::Needs qw( Git::Helpers Git::Sub );
 use Test::Requires::Git;
 use URI ();
 
@@ -14,9 +14,15 @@ test_requires_git();
 # A hook's GIT_DIR would point git at another repo
 delete local @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 
+# A build dir (e.g. dzil's .build) sits inside the checkout but is uncommitted
+my $committed = Git::Helpers::is_inside_work_tree() && eval {
+    my @hits = git::ls_tree(qw( --name-only HEAD -- lib/Open/This.pm ));
+    @hits == 1;
+};
+
 SKIP: {
-    skip 'must be inside Git checkout', 1
-        unless Git::Helpers::is_inside_work_tree();
+    skip 'lib/Open/This.pm must be committed on HEAD of a Git checkout', 5
+        unless $committed;
 
     local $ENV{OPEN_THIS_REMOTES} = q{};
 
@@ -148,7 +154,7 @@ SKIP: {
     for my $file_name (
         'Untracked.pm', 'Ignored.pm', 'Staged.pm',
         ( $windows ? () : ':x.pm' ),
-        '../../outside.pm'
+        '../../outside.pm', 'no-such.pm'
     ) {
         is(
             maybe_get_url_from_parsed_text( { file_name => $file_name } ),
