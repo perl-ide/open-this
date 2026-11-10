@@ -25,6 +25,15 @@ use URI          ();
 
 ## no critic (Subroutines::ProhibitExplicitReturnUndef)
 
+# host => [ segments before branch, segments after branch, line anchor prefix ]
+my %FORGE_URL_PARTS = (
+    'bitbucket.org' => [ ['src'],             [],       'lines-' ],
+    'codeberg.org'  => [ [ 'src', 'branch' ], [],       'L' ],
+    'git.sr.ht'     => [ ['tree'],            ['item'], 'L' ],
+    'gitlab.com'    => [ [ '-', 'blob' ],     [],       'L' ],
+);
+my $DEFAULT_URL_PARTS = [ ['blob'], [], 'L' ];
+
 sub parse_text {
     my $text = join q{ }, @_;
 
@@ -130,16 +139,19 @@ REMOTE:
     return undef unless $url && $url->can('host');
     $parsed->{remote_url} = $url;
 
+    my ( $before, $after, $anchor )
+        = @{ $FORGE_URL_PARTS{ $url->host } || $DEFAULT_URL_PARTS };
+
     my $clone = $url->clone;
     my @parts = $clone->path_segments;
     push(
         @parts,
-        'blob', Git::Helpers::current_branch_name(),
+        @$before, Git::Helpers::current_branch_name(), @$after,
         $parsed->{file_name}
     );
     $clone->path( join '/', @parts );
     if ( $parsed->{line_number} ) {
-        $clone->fragment( 'L' . $parsed->{line_number} );
+        $clone->fragment( $anchor . $parsed->{line_number} );
     }
 
     $parsed->{remote_file_url} = $clone;
@@ -243,6 +255,12 @@ sub _maybe_extract_line_number {
         return $2, $3;
     }
 
+    # Bitbucket links: foo/bar.go#lines-100 or foo/bar.go#lines-100:110
+    # Must run before the git-grep rule, which would read ":110" as the line.
+    if ( $$text =~ s{(\w)#lines-(\d+)\b.*}{$1} ) {
+        return $2;
+    }
+
     # ripgrep (rg --vimgrep)
     # ./lib/Open/This.pm:17:3
     if ( $$text =~ s{(\w):(\d+):(\d+).*}{$1} ) {
@@ -311,21 +329,68 @@ sub _maybe_extract_file_from_url {
     require_module('URI');
     my $uri = URI->new($$text);
 
-    my @parts = $uri->path_segments;
+    # path_segments decodes each segment, so "%20" becomes a space
+    my ( undef, @parts ) = $uri->path_segments;
+    my @p = map { $parts[$_] // q{} } 0 .. 3;
 
-    # Is this a GitHub(ish) URL?
-    if ( $parts[3] eq 'blob' ) {
-        my $file = path( @parts[ 5 .. scalar @parts - 1 ] );
+    # GitLab nests groups, so "-/blob" can follow any number of segments
+    my ($gitlab)
+        = grep { $parts[$_] eq '-' && ( $parts[ $_ + 1 ] // q{} ) eq 'blob' }
+        0 .. $#parts;
 
-        return unless $file->is_file;
+    # Index of the first file segment, after owner/repo/<marker>/<ref>
+    my $start;
+    my $last = $#parts;    # last index the file may start at
+    if    ( defined $gitlab ) { $start = $gitlab + 3 }
+    elsif ( $p[2] eq 'blob' ) { $start = 4 }             # GitHub
+    elsif ( $p[2] eq 'tree' ) {
 
-        $file = $file->stringify;
-
-        if ( $uri->fragment && $uri->fragment =~ m{\A[\d]\z} ) {
-            $file .= ':' . $uri->fragment;
-        }
-        return $file if $file;
+        # SourceHut has tree/<ref>/item/<file>, so "item" ends the ref
+        my ($item) = grep { $parts[$_] eq 'item' } 4 .. $#parts;
+        $start = $last = $item + 1 if defined $item;
     }
+    elsif ( $p[2] eq 'src' ) {
+
+        # Codeberg has src/branch|tag|commit/<ref>, Bitbucket src/<ref>
+        $start = $p[3] =~ m{\A(?:branch|tag|commit)\z} ? 5 : 4;
+    }
+
+    # Forges never serve ".." or an encoded "/" or "\" (a Windows separator)
+    # in a path, so don't let a URL leave the repo; NUL can't name a file
+    return if !defined $start || grep { $_ eq '..' || m{[/\\\0]} } @parts;
+
+    # A ref like "feature/x" spans segments, so try longer refs that git knows
+    for my $i ( $start .. $last ) {
+
+        # Drop empty segments from "//" or a trailing slash; path() dies on them
+        my @file = grep { length } @parts[ $i .. $#parts ];
+        last unless @file;
+
+        my $file = path(@file);
+        next unless $file->is_file;
+        next
+            if $i > $start
+            && !_is_git_ref( join '/', @parts[ $start - 1 .. $i - 1 ] );
+
+        return $file->stringify;
+    }
+    return;
+}
+
+sub _is_git_ref {
+    my $ref = shift;
+
+    require_module('File::Spec');
+
+    # show-ref matches refs/heads, refs/tags and refs/remotes/*; outside a
+    # repo git complains on stderr, so silence it
+    open my $stderr, '>&', \*STDERR or return 0;
+    my $found = 0;
+    if ( open STDERR, '>', File::Spec->devnull ) {
+        $found = system( 'git', 'show-ref', '--quiet', '--', $ref ) == 0;
+    }
+    open STDERR, '>&', $stderr;
+    return $found;
 }
 
 sub _maybe_find_local_file {
@@ -434,10 +499,16 @@ Copy/pasting a full GitHub URL.
     ot https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L17-L21
     # vim +17 lib/Open/This.pm
 
+GitLab, Codeberg, Bitbucket and SourceHut file URLs are also understood.
+
 Open a local file on the GitHub web site in your web browser.  From within a
 checked out copy of https://github.com/oalders/open-this
 
     ot -b Foo::Bar
+
+URLs are built in the style of GitHub, GitLab, Codeberg, Bitbucket or
+SourceHut, depending on the host of your remote.  Other hosts get GitHub-style
+URLs.
 
 Open a local file at the correct line on the GitHub web site in your web
 browser.  From within a checked out copy of
@@ -498,8 +569,9 @@ Tries to return an URL to a Git repository for a checked out file. The URL
 will be built using the first remote listed in C<$ENV{OPEN_THIS_REMOTES}>
 (comma-separated) that exists, falling back to C<origin>, and the name of the
 current branch. A line number will be attached if it can be parsed from the
-text. This has only currently be tested with GitHub URLs and it assumes you're
-working on a branch which has already been pushed to your remote.
+text. GitHub, GitLab, Codeberg, Bitbucket and SourceHut URL layouts are
+supported; other hosts get GitHub-style URLs. It assumes you're working on a
+branch which has already been pushed to your remote.
 
     my $url = maybe_get_url_from_parsed_text( parse_text('t/lib/Foo/Bar.pm:32'));
     # $url might be something like: https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L32
