@@ -11,6 +11,10 @@ use Test::Script qw(
 );
 
 use Open::This ();
+use Path::Tiny qw( path );
+
+my @browse_stub = ( interpreter_options => [ '-It/lib', '-MOtBrowseStub' ] );
+my $abs_path    = path('lib/Open/This.pm')->absolute->stringify;
 
 subtest 'print' => sub {
     my @args = (
@@ -109,6 +113,39 @@ subtest 'bad option with target still opens' => sub {
         'runs'
     );
     script_stdout_is( "--line 222 lib/Open/This.pm\n", 'prints editor args' );
+};
+
+subtest 'browse absolute path' => sub {
+    script_fails(
+        [ './script/ot', '--browse', $abs_path ],
+        { exit => 1, @browse_stub },
+        'exits 1'
+    );
+    script_stderr_like( qr/Cannot browse an absolute path/, 'reports error' );
+};
+
+subtest 'browse absolute path, json' => sub {
+    script_fails(
+        [ './script/ot', '--browse', '--json', $abs_path ],
+        { exit => 1, @browse_stub },
+        'exits 1'
+    );
+    script_stdout_is(
+        qq({"details":"$abs_path","error":"Cannot browse an absolute path","success":false}\n),
+        'error in JSON'
+    );
+};
+
+subtest 'browse relative path' => sub {
+    script_runs(
+        [ './script/ot', '--browse', 'lib/Open/This.pm' ],
+        {@browse_stub},
+        'runs'
+    );
+    script_stdout_is(
+        "https://github.com/o/r/blob/topic/lib/Open/This.pm\n",
+        'opens repository URL'
+    );
 };
 
 done_testing;
