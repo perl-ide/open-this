@@ -86,6 +86,7 @@ subtest 'version' => sub {
 subtest 'bad option without target' => sub {
     script_fails( [ './script/ot', '--bogus' ], { exit => 2 }, 'exits 2' );
     script_stderr_like( qr/Unknown option: bogus/, 'warns about option' );
+    script_stderr_like( qr/Usage:/,                'prints usage' );
 };
 
 subtest 'bad option without target, json' => sub {
