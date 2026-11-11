@@ -49,7 +49,7 @@ my %WriteMakefileArgs = (
     "URI::Escape" => 0,
     "lib" => 0
   },
-  "VERSION" => "0.000036",
+  "VERSION" => "0.000037",
   "test" => {
     "TESTS" => "t/*.t"
   }

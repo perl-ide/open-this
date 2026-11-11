@@ -1,5 +1,7 @@
 Revision history for Open-This
 
+{{$NEXT}}
+
 0.000036  2026-11-11 00:49:32Z
     - Add -h|--help and -v|--version to ot (GH#79) (Olaf Alders)
     - When an unknown or invalid option leaves no target to open, ot now prints
