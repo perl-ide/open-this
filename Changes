@@ -13,6 +13,14 @@ Revision history for Open-This
       checkout get no URL (GH#83) (Olaf Alders)
     - Don't read the port or password of a pasted URL as a line number (GH#75)
       (Olaf Alders)
+    - Support Codeberg, GitLab, Bitbucket and SourceHut file URLs, both when
+      building ot --browse links and when opening a pasted URL (GH#76) (Olaf
+      Alders)
+    - Add the OPEN_THIS_REMOTES environment variable, a comma-separated list of
+      remotes to use for browse URLs. The first one that exists in the
+      repository is used, falling back to origin (GH#77) (Stefan Härter)
+    - Prefix relative file names starting with + or - with ./ so the editor
+      does not read them as a command or an option (GH#78) (Olaf Alders)
 
 0.000035  2025-10-28 17:23:31Z
     - Add script_fails to Test::Script import list in t/ot.t (GH#60) (Copilot)
