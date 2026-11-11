@@ -116,7 +116,8 @@ sub parse_text {
 sub maybe_get_url_from_parsed_text {
     my $err;
     try {
-        require_module('Git::Helpers');
+        require_module($_)
+            for qw( Git::Helpers Git::Sub File::pushd Capture::Tiny );
     }
     catch {
         $err = $_;
@@ -128,7 +129,12 @@ sub maybe_get_url_from_parsed_text {
     }
 
     my $parsed = shift;
-    return undef unless $parsed && $parsed->{file_name};
+    return undef
+        unless $parsed && $parsed->{file_name} && -f $parsed->{file_name};
+
+    # Ask the file's own checkout, which need not be the cwd's
+    my $file  = path( $parsed->{file_name} )->absolute;
+    my $guard = File::pushd::pushd( $file->parent );
 
     # enable used remote to be configurable via environment variable
     my $url;
@@ -143,6 +149,23 @@ REMOTE:
     }
 
     return undef unless $url && $url->can('host');
+
+    my ( $branch, @repo_path );
+    Capture::Tiny::capture_stderr(
+        sub {
+            try {
+                $branch = Git::Helpers::current_branch_name();
+
+                # ls-tree, unlike ls-files, runs no repo-configured fsmonitor
+                local $/ = "\0";
+                @repo_path = git::ls_tree(
+                    qw( -z --full-name --name-only HEAD -- ),
+                    ':(literal)' . $file->basename
+                );
+            };
+        }
+    );
+    return undef unless @repo_path == 1;
     $parsed->{remote_url} = $url;
 
     my ( $before, $after, $anchor )
@@ -150,11 +173,7 @@ REMOTE:
 
     my $clone = $url->clone;
     my @parts = $clone->path_segments;
-    push(
-        @parts,
-        @$before, Git::Helpers::current_branch_name(), @$after,
-        $parsed->{file_name}
-    );
+    push( @parts, @$before, $branch, @$after, $repo_path[0] );
     $clone->path( join '/', @parts );
     if ( $parsed->{line_number} ) {
         $clone->fragment( $anchor . $parsed->{line_number} );
@@ -574,13 +593,17 @@ directly.)
 
 =head2 maybe_get_url_from_parsed_text
 
-Tries to return an URL to a Git repository for a checked out file. The URL
-will be built using the first remote listed in C<$ENV{OPEN_THIS_REMOTES}>
-(comma-separated) that exists, falling back to C<origin>, and the name of the
-current branch. A line number will be attached if it can be parsed from the
-text. GitHub, GitLab, Codeberg, Bitbucket and SourceHut URL layouts are
-supported; other hosts get GitHub-style URLs. It assumes you're working on a
-branch which has already been pushed to your remote.
+Tries to return an URL to a Git repository for a checked out file. The
+repository, remote and branch are those of the checkout the file lives in,
+which need not be the one you are in. The file must be committed on the
+current branch; otherwise, or if the file is outside any checkout, C<undef>
+is returned. The URL will be built using the first remote listed in
+C<$ENV{OPEN_THIS_REMOTES}> (comma-separated) that exists, falling back to
+C<origin>, the name of the checkout's current branch and the file's path from
+the root of the checkout. A line number will be attached if it can be parsed
+from the text. GitHub, GitLab, Codeberg, Bitbucket and SourceHut URL layouts
+are supported; other hosts get GitHub-style URLs. It assumes you're working
+on a branch which has already been pushed to your remote.
 
     my $url = maybe_get_url_from_parsed_text( parse_text('t/lib/Foo/Bar.pm:32'));
     # $url might be something like: https://github.com/oalders/open-this/blob/master/lib/Open/This.pm#L32

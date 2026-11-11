@@ -6,8 +6,11 @@ Revision history for Open-This
       usage and exits 2, or prints a JSON error and exits 2 with --json.
       Previously it reported "Could not locate file" and exited 1 (GH#79) (Olaf
       Alders)
-    - ot --browse now reports an error for absolute paths instead of opening a
-      broken URL (GH#80) (Olaf Alders)
+    - ot --browse and maybe_get_url_from_parsed_text now build the URL from
+      the file's path in its own checkout, using that checkout's remote and
+      branch, so relative paths from subdirectories, ".." paths and absolute
+      paths work. Files not committed on the current branch and files outside a
+      checkout get no URL (GH#83) (Olaf Alders)
     - Don't read the port or password of a pasted URL as a line number (GH#75)
       (Olaf Alders)
 
